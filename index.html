@@ -82,20 +82,31 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            background-color: #444;
-            color: white;
+            background-color: white;
+            color: black;
             border: none;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 17.5px;
             cursor: pointer;
             font-family: Helvetica, sans-serif;
             font-size: 1rem;
             text-decoration: none;
             display: inline-block;
             text-align: center;
+            width: 50px;
+            transition: background-color 0.3s, color 0.3s;
         }
         .about-button:hover {
-            background-color: #555;
+            background-color: #ece9e9;
+        }
+        /* Light and dark theme for about button */
+        .light-theme .about-button {
+            background-color: #000000;
+            color: white;
+        }
+        .dark-theme .about-button {
+            background-color: white;
+            color: black;
         }
         /* Card styling */
         .card {
@@ -148,8 +159,8 @@
         }
     </style>
 </head>
-<body>
-    <a href="#" class="about-button" onclick="showCard(event)">About</a>
+<body class="dark-theme">
+    <a href="#" class="about-button" onclick="showCard(event)">about</a>
     <h1>Welcome to icos</h1>
     <div class="rect-box">
         <p>We don't use any cookies</p>
@@ -168,6 +179,7 @@
     <script>
         function toggleTheme() {
             const body = document.body;
+            const aboutButton = document.querySelector('.about-button');
             const isLightTheme = body.classList.contains('light-theme');
 
             if (isLightTheme) {
@@ -175,11 +187,17 @@
                 body.classList.add('dark-theme');
                 body.style.backgroundColor = '#000000';
                 body.style.color = 'white';
+
+                aboutButton.style.backgroundColor = 'white';
+                aboutButton.style.color = 'black';
             } else {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
                 body.style.backgroundColor = '#ffffff';
                 body.style.color = '#000000';
+
+                aboutButton.style.backgroundColor = '#000000';
+                aboutButton.style.color = 'white';
             }
         }
 
