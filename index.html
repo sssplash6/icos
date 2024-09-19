@@ -77,20 +77,94 @@
         .dark-theme .switch::before {
             transform: translateX(20px);
         }
+        /* About button styling */
+        .about-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Helvetica, sans-serif;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .about-button:hover {
+            background-color: #555;
+        }
+        /* Card styling */
+        .card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9) rotateY(0deg); /* Start slightly smaller */
+            width: 300px;
+            padding: 20px;
+            background: #fff;
+            color: #000;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transitions */
+        }
+        .card.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1) rotateY(0deg); /* Final position with no rotation */
+        }
+        .card.flip {
+            animation: flipCard 0.8s forwards;
+        }
+        @keyframes flipCard {
+            0% {
+                transform: translate(-50%, -50%) scale(0.9) rotateY(90deg);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            z-index: 999;
+        }
+        .overlay.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
+    <a href="#" class="about-button" onclick="showCard(event)">About</a>
     <h1>Welcome to icos</h1>
-
     <div class="rect-box">
         <p>We don't use any cookies</p>
     </div>
-
     <!-- Switch Button -->
     <button class="switch-btn" onclick="toggleTheme()">
         <div class="switch"></div>
     </button>
-
+    <!-- Card and overlay -->
+    <div class="overlay" id="overlay" onclick="hideCard()"></div>
+    <div class="card" id="card">
+        <h2>About The creator</h2>
+        <p>a random mzf</p>
+        <button onclick="hideCard()">Close</button>
+    </div>
     <script>
         function toggleTheme() {
             const body = document.body;
@@ -107,6 +181,27 @@
                 body.style.backgroundColor = '#ffffff';
                 body.style.color = '#000000';
             }
+        }
+
+        function showCard(event) {
+            event.preventDefault();
+            const card = document.getElementById('card');
+            const overlay = document.getElementById('overlay');
+            
+            overlay.classList.add('show');
+            card.classList.add('show');
+            setTimeout(() => {
+                card.classList.add('flip');
+            }, 10); // Short delay to trigger animation
+        }
+
+        function hideCard() {
+            const card = document.getElementById('card');
+            const overlay = document.getElementById('overlay');
+            
+            card.classList.remove('flip');
+            card.classList.remove('show');
+            overlay.classList.remove('show');
         }
     </script>
 </body>
