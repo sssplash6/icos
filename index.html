@@ -22,6 +22,28 @@
             color: inherit; /* Inherit color from body */
             text-align: center;
             font-family: Helvetica, sans-serif;
+            margin-bottom:5px;
+        }
+        /* Cursive text style */
+        .cursive-text {
+            font-family:monospace;
+            font-style: italic;
+            font-size: .75rem;
+            color: inherit;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: appear 2s forwards;
+            margin-top: 1px;
+        }
+        @keyframes appear {
+            0% {
+                opacity: 0;
+                transform: translateY(20px); /* Start position slightly lower */
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0); /* End position */
+            }
         }
         .rect-box {
             color: inherit; /* Inherit color from body */
@@ -167,13 +189,13 @@
             box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
             color: #484c7a;
             cursor: pointer;
-            display: inline-block;
             font-family: Hind, system-ui, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
             font-weight: 600;
-            margin: 4px;
+            margin: 10px;
             padding: 16px 24px;
             text-align: center;
             transition: all .2s ease-out;
+            margin-top:40px;
         }
         .button-24:hover {
             box-shadow: rgba(37, 44, 97, .15) 0 8px 22px 0, rgba(93, 100, 148, .2) 0 4px 6px 0;
@@ -181,15 +203,14 @@
         .creator{
             font-family:'Courier New', Courier, monospace;
             color: rgb(119, 116, 116);
-
         }
-
-        
     </style>
 </head>
 <body class="dark-theme">
     <a href="#" class="about-button" onclick="showCard(event)">About</a>
     <h1>Welcome to icos</h1>
+    <!-- Cursive text below h1 -->
+    <p class="cursive-text">Where solving past papers are not boring</p>
 
     <button class="button-24" role="button">
         <span class="text">Start</span>
@@ -232,13 +253,13 @@
             } else {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
-                body.style.backgroundColor = '#ffffff';
-                body.style.color = '#000000';
-                aboutButton.style.backgroundColor = '#000000';
+                body.style.backgroundColor = 'white';
+                body.style.color = 'black';
+                aboutButton.style.backgroundColor = 'black';
                 aboutButton.style.color = 'white';
 
                 // Switch to light image
-                themeImage.src = "black.png"; 
+                themeImage.src = 'black.png';
             }
         }
 
@@ -246,20 +267,14 @@
             event.preventDefault();
             const card = document.getElementById('card');
             const overlay = document.getElementById('overlay');
-            
+            card.classList.add('show', 'flip');
             overlay.classList.add('show');
-            card.classList.add('show');
-            setTimeout(() => {
-                card.classList.add('flip');
-            }, 10); // Short delay to trigger animation
         }
 
         function hideCard() {
             const card = document.getElementById('card');
             const overlay = document.getElementById('overlay');
-            
-            card.classList.remove('flip');
-            card.classList.remove('show');
+            card.classList.remove('show', 'flip');
             overlay.classList.remove('show');
         }
     </script>
