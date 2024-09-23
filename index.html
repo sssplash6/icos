@@ -22,38 +22,22 @@
             color: inherit; /* Inherit color from body */
             text-align: center;
             font-family: Helvetica, sans-serif;
-            margin-bottom:5px;
-        }
-        /* Cursive text style */
-        .cursive-text {
-            font-family:monospace;
-            font-style: italic;
-            font-size: .75rem;
-            color: inherit;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: appear 2s forwards;
-            margin-top: 1px;
-        }
-        @keyframes appear {
-            0% {
-                opacity: 0;
-                transform: translateY(20px); /* Start position slightly lower */
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0); /* End position */
-            }
         }
         .rect-box {
             color: inherit; /* Inherit color from body */
             position: absolute;
-            bottom: 20px; /* Position at the bottom */
+            bottom: 20px; /* Move to the top */
+            left: 20px; /* Align to the left */
             font-family: Helvetica, sans-serif;
             font-size: small;
             padding: 10px;
-            text-align: center;
-            width: 100%; /* Ensure it spans the width of the page */
+            text-align: left; /* Align text to the left */
+            width: auto; /* Adjust width as needed */
+        }
+        .button-container {
+            position: absolute;
+            bottom: 20px; /* Position at the bottom */
+            right: 20px; /* Align to the right */
         }
         .switch-btn {
             position: absolute;
@@ -185,40 +169,43 @@
             background-color: transparent;
             background-image: linear-gradient(#fff, #f5f5fa);
             border: 0 solid #003dff;
-            border-radius: 35px;
+            border-radius: 22px;
             box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
             color: #484c7a;
             cursor: pointer;
+            display: inline-block;
             font-family: Hind, system-ui, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
             font-weight: 600;
-            margin: 10px;
-            padding: 16px 24px;
+            margin: 4px;
+            padding: 10px 16px; /* Make it slimmer */
             text-align: center;
             transition: all .2s ease-out;
-            margin-top:40px;
+            height: 40px; /* Adjust height */
         }
         .button-24:hover {
             box-shadow: rgba(37, 44, 97, .15) 0 8px 22px 0, rgba(93, 100, 148, .2) 0 4px 6px 0;
+            transform:scale(1.1);
+            
         }
-        .creator{
-            font-family:'Courier New', Courier, monospace;
+        .creator {
+            font-family: 'Courier New', Courier, monospace;
             color: rgb(119, 116, 116);
         }
     </style>
 </head>
 <body class="dark-theme">
     <a href="#" class="about-button" onclick="showCard(event)">About</a>
-    <h1>Welcome to icos</h1>
-    <!-- Cursive text below h1 -->
-    <p class="cursive-text">Where solving past papers are not boring</p>
-
-    <button class="button-24" role="button">
-        <span class="text">Start</span>
-    </button>
+    <h1>Welcome to <span style="color:yellowgreen; font-family: cursive;">i</span><span style="font-weight: 500;">cos</span></h1>
 
     <div class="rect-box">
         <img id="themeImage" src="white.png" alt="Image description" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 10px;">
         <p style="display: inline;">We don't use any cookies</p>
+    </div>
+
+    <div class="button-container">
+        <button class="button-24" role="button">
+            <span class="text">Start → </span>
+        </button>
     </div>
 
     <!-- Switch Button -->
@@ -253,13 +240,13 @@
             } else {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
-                body.style.backgroundColor = 'white';
-                body.style.color = 'black';
-                aboutButton.style.backgroundColor = 'black';
+                body.style.backgroundColor = '#ffffff';
+                body.style.color = '#000000';
+                aboutButton.style.backgroundColor = '#000000';
                 aboutButton.style.color = 'white';
 
                 // Switch to light image
-                themeImage.src = 'black.png';
+                themeImage.src = "black.png"; 
             }
         }
 
@@ -267,14 +254,14 @@
             event.preventDefault();
             const card = document.getElementById('card');
             const overlay = document.getElementById('overlay');
-            card.classList.add('show', 'flip');
+            card.classList.add('show');
             overlay.classList.add('show');
         }
 
         function hideCard() {
             const card = document.getElementById('card');
             const overlay = document.getElementById('overlay');
-            card.classList.remove('show', 'flip');
+            card.classList.remove('show');
             overlay.classList.remove('show');
         }
     </script>
