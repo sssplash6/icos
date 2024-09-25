@@ -18,10 +18,12 @@
             transition: background-color 0.3s, color 0.3s;
         }
         h1 {
-            font-size: 4rem;
+            font-size: 3rem;
             color: inherit; /* Inherit color from body */
             text-align: center;
             font-family: Helvetica, sans-serif;
+            font-weight:lighter;
+            
         }
         .rect-box {
             color: inherit; /* Inherit color from body */
@@ -39,85 +41,14 @@
             bottom: 20px; /* Position at the bottom */
             right: 20px; /* Align to the right */
         }
-        .about-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: #000000;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 17.5px;
-            cursor: pointer;
-            font-family: Helvetica, sans-serif;
-            font-size: 0.8rem;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            width: 50px;
-            transition: background-color 0.3s, color 0.3s;
-            font-weight: 600;
-        }
-        .about-button:hover {
-            background-color: #ece9e9;
-        }
-        /* Card styling */
-        .card {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9) rotateY(0deg); /* Start slightly smaller */
-            width: 320px;
-            height: 120px;
-            padding: 20px;
-            background: #fff;
-            color: #000;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            display: none;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transitions */
-        }
-        .card.show {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1) rotateY(0deg); /* Final position with no rotation */
-        }
-        .card.flip {
-            animation: flipCard 0.8s forwards;
-        }
-        @keyframes flipCard {
-            0% {
-                transform: translate(-50%, -50%) scale(0.9) rotateY(90deg);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
-                opacity: 1;
-            }
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            display: none;
-            z-index: 999;
-        }
-        .overlay.show {
-            display: block;
-        }
+
         .button-24 {
             background-color: transparent;
             background-image: linear-gradient(#fff, #f5f5fa);
             border: 0 solid #003dff;
             border-radius: 22px;
             box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
-            color: #484c7a;
+            color: #000000;
             cursor: pointer;
             display: inline-block;
             font-family: Hind, system-ui, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -133,15 +64,10 @@
             box-shadow: rgba(37, 44, 97, .15) 0 8px 22px 0, rgba(93, 100, 148, .2) 0 4px 6px 0;
             transform: scale(1.1);
         }
-        .creator {
-            font-family: 'Courier New', Courier, monospace;
-            color: rgb(119, 116, 116);
-        }
     </style>
 </head>
 <body>
-    <a href="#" class="about-button" onclick="showCard(event)">About</a>
-    <h1>Welcome to <span style="color:yellowgreen; font-family: cursive;">i</span><span style="font-weight: 500;">cos</span></h1>
+    <h1>welcome to <span style="color:yellowgreen; font-family: cursive; font-weight:600; font-size:4rem;">i</span><span style="font-weight: 380; font-family: cursive; font-size:4rem;">cos</span></h1>
 
     <div class="rect-box">
         <img id="themeImage" src="black.png" alt="Image description" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 10px;">
@@ -154,12 +80,6 @@
         </a>
     </div>
 
-    <!-- Card and overlay -->
-    <div class="overlay" id="overlay" onclick="hideCard()"></div>
-    <div class="card" id="card">
-        <h2 class="creator">the Creator</h2>
-        <p class="creator">Nothing special, just a random high school senior from Uzbekistan</p>
-    </div>
 
     <script>
         function showCard(event) {
