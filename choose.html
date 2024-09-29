@@ -25,22 +25,24 @@
         .box-container {
             display: flex;
             justify-content: center;
-            gap: 20px; /* Space between the boxes */
+            gap: 40px; /* Increased space between the boxes */
             margin-top: 50px; /* Space above the boxes */
         }
         .rounded-box {
             background-color: #f5f5fa; /* Light background */
             border-radius: 15px; /* Rounded corners */
-            padding: 20px;
+            padding: 15px; /* Adjusted padding */
             text-align: center;
             box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
-            width: 200px; /* Fixed width for the boxes */
-            height: 200px; /* Fixed height for the boxes */
+            width: 160px; /* Reduced width for the boxes */
+            height: 160px; /* Reduced height for the boxes */
             transition: transform 0.3s; /* Animation effect */
             display: flex;
             flex-direction: column;
             align-items: center; /* Center items horizontally */
             justify-content: center; /* Center items vertically */
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit color from parent */
         }
         .rounded-box:hover {
             transform: scale(1.05); /* Slight scale on hover */
@@ -58,14 +60,14 @@
     </a>
 
     <div class="box-container">
-        <div class="rounded-box">
-            <img src="essay-icon.png" alt="Check Your Essays" class="box-image"> <!-- Replace with your image path -->
-            <a href="check-essays.html" style="text-decoration: none; color: inherit;">Check Your Essays</a>
-        </div>
-        <div class="rounded-box">
+        <a href="https://chatgpt.com/g/g-QjD9k578U-icos-econbus-essay-checker" class="rounded-box">
+            <img src="essay.png" alt="Check Your Essays" class="box-image"> <!-- Replace with your image path -->
+            Check Your Essays
+        </a>
+        <a href="mcq.html" class="rounded-box">
             <img src="test.png" alt="Eco MCQ" class="box-image"> <!-- Replace with your image path -->
-            <a href="eco-mcq.html" style="text-decoration: none; color: inherit;">Eco MCQ</a>
-        </div>
+            Eco MCQ
+        </a>
     </div>
 </body>
 </html>
