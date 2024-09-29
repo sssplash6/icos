@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - iCos</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons (Optional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-eNfyJd/9HDe2kPtYCPO+Cq3z+z+nYsqOPpHgZjD7QYXMTLdk/t1z1Nq8W67pEJpK" crossorigin="anonymous">
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
+    <!-- Inline CSS Stylesheet -->
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Root Variables for Colors */
+        :root {
+            --primary-color: #2c3e50;    /* Navy blue */
+            --secondary-color: #18bc9c;  /* Teal */
+            --accent-color: #ff6f61;     /* Coral */
+            --text-color: #ffffff;
+        }
+
+        /* Global Styles */
+        body, html {
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            background-color: var(--primary-color);
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            background-color: rgba(44, 62, 80, 0.9);
+            padding: 10px 0;
+            top: 0;
+            z-index: 10;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .navbar .logo img {
+            height: 30px; /* Adjust the height as needed */
+            margin-right: 10px; /* Space between the icon and text */
+        }
+
+        .navbar .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            /* Gradient text effect */
+            background: linear-gradient(90deg, #ff6f61, #ff8f81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar .nav-links li {
+            margin-left: 20px;
+        }
+
+        .navbar .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .navbar .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar .menu-toggle {
+            display: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Quiz Container */
+        .quiz-container {
+            display: flex;
+            flex-direction: row;
+            padding-top: 80px; /* Adjust for fixed navbar */
+            min-height: calc(100vh - 80px);
+        }
+
+        /* PDF Viewer */
+        .pdf-viewer {
+            width: 70%; /* Adjusted to 70% width */
+            overflow: auto;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        /* Question List */
+        .question-list {
+            width: 30%; /* Adjusted to 30% width */
+            background-color: #ffffff;
+            color: #333333;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .question-list h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .options button {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 5px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .options button:hover {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .options button.selected {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        /* Footer Section */
+        footer {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .quiz-container {
+                flex-direction: column;
+            }
+
+            .pdf-viewer, .question-list {
+                width: 100%;
+            }
+
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                background-color: rgba(44, 62, 80, 0.9);
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 100%;
+                text-align: right;
+                padding-right: 20px;
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                margin: 15px 0;
+            }
+
+            .navbar .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .navbar .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo">
+                <span class="logo-text">iCos</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <!-- Removed "Quizzes" from the navbar -->
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Quiz Content -->
+    <div class="quiz-container">
+        <!-- PDF Viewer -->
+        <div class="pdf-viewer" id="pdf-viewer">
+            <!-- PDF will be rendered here -->
+            <canvas id="pdf-canvas"></canvas>
+        </div>
+
+        <!-- Question List -->
+        <div class="question-list" id="question-list">
+            <h2>Questions</h2>
+            <!-- Questions with options will be generated here -->
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 iCos. All rights are not reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Inline JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Retrieve URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const year = urlParams.get('year');
+        const season = urlParams.get('season');
+        const component = urlParams.get('component');
+
+        // Validate the parameters
+        if (!year || !season || !component) {
+            alert('Invalid selection. Please go back and select all options.');
+            window.location.href = 'choose.html';
+        }
+
+        // Construct the PDF file path
+        const pdfPath = `pdfs/${year}_${season}_${component}.pdf`;
+
+        // Initialize PDF.js
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+        // Specify the workerSrc property
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+        let pdfDoc = null,
+            pageNum = 1,
+            pageRendering = false,
+            pageNumPending = null,
+            scale = 1.5,
+            canvas = document.getElementById('pdf-canvas'),
+            ctx = canvas.getContext('2d');
+
+        // Load the PDF
+        pdfjsLib.getDocument(pdfPath).promise.then((pdfDoc_) => {
+            pdfDoc = pdfDoc_;
+            // Initial/first page rendering
+            renderPage(pageNum);
+        }).catch((error) => {
+            console.error('Error loading PDF:', error);
+            alert('The selected paper could not be found.');
+        });
+
+        // Render the page
+        function renderPage(num) {
+            pageRendering = true;
+            // Using promise to fetch the page
+            pdfDoc.getPage(num).then((page) => {
+                const viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                // Render PDF page into canvas context
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                const renderTask = page.render(renderContext);
+
+                // Wait for rendering to finish
+                renderTask.promise.then(() => {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        // New page rendering is pending
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+        }
+
+        // Generate the Question List
+        const questionList = document.getElementById('question-list');
+
+        // Let's assume each paper has 10 questions
+        const totalQuestions = 30; // Adjust as needed
+        const userAnswers = {}; // To store user's answers
+
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+
+            const questionText = document.createElement('p');
+            questionText.textContent = `Question ${i}:`;
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('options');
+
+            ['A', 'B', 'C', 'D'].forEach((option) => {
+                const optionButton = document.createElement('button');
+                optionButton.textContent = option;
+                optionButton.setAttribute('data-question', i);
+                optionButton.setAttribute('data-option', option);
+
+                // Handle option click
+                optionButton.addEventListener('click', () => {
+                    // Save the user's answer
+                    userAnswers[`question-${i}`] = option;
+
+                    // Highlight the selected option
+                    const allOptions = optionsDiv.querySelectorAll('button');
+                    allOptions.forEach((btn) => btn.classList.remove('selected'));
+                    optionButton.classList.add('selected');
+                });
+
+                optionsDiv.appendChild(optionButton);
+            });
+
+            questionDiv.appendChild(questionText);
+            questionDiv.appendChild(optionsDiv);
+            questionList.appendChild(questionDiv);
+        }
+
+        // Optional: Add a submit button
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Submit Answers';
+        submitButton.classList.add('button-24');
+        submitButton.style.marginTop = '20px';
+
+        submitButton.addEventListener('click', () => {
+            // Process the user's answers
+            console.log('User Answers:', userAnswers);
+
+            // For now, display a message
+            alert('Your answers have been submitted!');
+
+            // Optionally, clear the selections
+            // Reset userAnswers object
+            // for (let key in userAnswers) delete userAnswers[key];
+            // Remove 'selected' class from all option buttons
+            // const allOptionButtons = document.querySelectorAll('.options button');
+            // allOptionButtons.forEach((btn) => btn.classList.remove('selected'));
+        });
+
+        questionList.appendChild(submitButton);
+    </script>
+</body>
+</html>
