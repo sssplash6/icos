@@ -46,11 +46,20 @@ body.dark-mode {
 }
 
 .navbar .logo {
-    color: #ffffff;
-    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
     text-decoration: none;
+}
+
+.navbar .logo img {
+    height: 30px; /* Adjust the height as needed */
+    margin-right: 10px; /* Space between the icon and text */
+}
+
+.navbar .logo-text {
+    font-size: 1.8rem;
     font-weight: 700;
-    /* Added styling to make "iCos" more appealing */
+    /* Gradient text effect */
     background: linear-gradient(90deg, #ff6f61, #ff8f81);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -172,53 +181,6 @@ body.dark-mode {
 
 .button-24:hover::after {
     left: 0;
-}
-
-/* Modal Popup */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 500px;
-    background-color: rgba(44, 62, 80, 0.95);
-    color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    animation: fadeIn 0.5s forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-}
-
-.modal-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.modal-content p {
-    margin: 0;
-    font-size: 1rem;
-}
-
-.close {
-    background: none;
-    border: none;
-    color: #ffffff;
-    font-size: 1.5rem;
-    cursor: pointer;
 }
 
 /* Footer Section */

@@ -1,0 +1,66 @@
+/* Selection Form Section */
+.selection-form {
+    padding-top: 100px; /* Adjust to offset the fixed navbar */
+    min-height: calc(100vh - 70px); /* Ensure full viewport height minus navbar */
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+}
+
+.selection-form .container {
+    width: 90%;
+    margin: 0 auto;
+    max-width: 600px;
+    text-align: center;
+}
+
+.selection-form h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.selection-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.form-group select:focus {
+    outline: none;
+    border: 2px solid var(--accent-color);
+}
+
+.selection-form .button-24 {
+    margin-top: 20px;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+    .selection-form h1 {
+        font-size: 2rem;
+    }
+}

@@ -1,73 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Separate Page</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #ffffff;
-            color: #000000;
-            flex-direction: column;
-            position: relative;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .logo {
-            position: absolute;
-            top: 20px; /* Position from the top */
-            left: 20px; /* Position from the left */
-        }
-        .box-container {
-            display: flex;
-            justify-content: center;
-            gap: 40px; /* Increased space between the boxes */
-            margin-top: 50px; /* Space above the boxes */
-        }
-        .rounded-box {
-            background-color: #f5f5fa; /* Light background */
-            border-radius: 15px; /* Rounded corners */
-            padding: 15px; /* Adjusted padding */
-            text-align: center;
-            box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
-            width: 160px; /* Reduced width for the boxes */
-            height: 160px; /* Reduced height for the boxes */
-            transition: transform 0.3s; /* Animation effect */
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center items horizontally */
-            justify-content: center; /* Center items vertically */
-            text-decoration: none; /* Remove underline from links */
-            color: inherit; /* Inherit color from parent */
-        }
-        .rounded-box:hover {
-            transform: scale(1.05); /* Slight scale on hover */
-        }
-        .box-image {
-            width: 40px; /* Set a fixed size for the images */
-            height: 40px; /* Set a fixed size for the images */
-            margin-bottom: 10px; /* Space between the image and text */
-        }
-    </style>
+    <title>Select Quiz Options - iCos</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons (Optional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-eNfyJd/9HDe2kPtYCPO+Cq3z+z+nYsqOPpHgZjD7QYXMTLdk/t1z1Nq8W67pEJpK" crossorigin="anonymous">
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="styles2.css">
 </head>
 <body>
-    <a href="index.html" class="logo">
-        <img src="LOGO.png" alt="Logo" style="width: 30px; height: 30px;"> <!-- Adjust the logo size as needed -->
-    </a>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="logo.png" alt="Logo">
+                <span class="logo-text">iCos</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <!-- Removed "Quizzes" from the navbar -->
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
 
-    <div class="box-container">
-        <a href="https://chatgpt.com/g/g-QjD9k578U-icos-econbus-essay-checker" class="rounded-box">
-            <img src="essay.png" alt="Check Your Essays" class="box-image"> <!-- Replace with your image path -->
-            Check Your Essays
-        </a>
-        <a href="mcq.html" class="rounded-box">
-            <img src="test.png" alt="Eco MCQ" class="box-image"> <!-- Replace with your image path -->
-            Eco MCQ
-        </a>
+    <!-- Selection Form Section -->
+    <div class="selection-form">
+        <div class="container">
+            <h1>Select Your Quiz Options</h1>
+            <form action="quiz.html" method="GET">
+                <!-- Year Selection -->
+                <div class="form-group">
+                    <label for="year">Select Year:</label>
+                    <select name="year" id="year" required>
+                        <option value="" disabled selected>Select Year</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <!-- Add more years as needed -->
+                    </select>
+                </div>
+
+                <!-- Season Selection -->
+                <div class="form-group">
+                    <label for="season">Select Season:</label>
+                    <select name="season" id="season" required>
+                        <option value="" disabled selected>Select Season</option>
+                        <option value="Spring">Spring</option>
+                        <option value="Summer">Summer</option>
+                        <option value="Fall">Fall</option>
+                        <option value="Winter">Winter</option>
+                    </select>
+                </div>
+
+                <!-- Component Selection -->
+                <div class="form-group">
+                    <label for="component">Select Component:</label>
+                    <select name="component" id="component" required>
+                        <option value="" disabled selected>Select Component</option>
+                        <option value="Microeconomics">Microeconomics</option>
+                        <option value="Macroeconomics">Macroeconomics</option>
+                        <option value="Econometrics">Econometrics</option>
+                        <!-- Add more components as needed -->
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="button-24">Start Quiz →</button>
+            </form>
+        </div>
     </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 iCos. All rights are not reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>

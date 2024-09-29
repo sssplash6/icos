@@ -36,3 +36,9 @@ document.addEventListener('keydown', function (event) {
         modal.style.display = 'none';
     }
 });
+// Mobile Menu Toggle
+const menuToggle = document.getElementById('mobile-menu');
+
+menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+});
