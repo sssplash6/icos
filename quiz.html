@@ -254,8 +254,7 @@
     <div class="quiz-container">
         <!-- PDF Viewer -->
         <div class="pdf-viewer" id="pdf-viewer">
-            <!-- PDF will be rendered here -->
-            <canvas id="pdf-canvas"></canvas>
+            <iframe id="pdf-iframe" src="" width="100%" height="100%" style="border: none;"></iframe>
         </div>
 
         <!-- Question List -->
@@ -296,6 +295,8 @@
 
         // Construct the PDF file path
         const pdfPath = `pdfs/${year}_${season}_${component}.pdf`;
+        const pdfIframe = document.getElementById('pdf-iframe');
+        pdfIframe.src = `web/viewer.html?file=${encodeURIComponent(pdfPath)}`;
 
         // Initialize PDF.js
         const pdfjsLib = window['pdfjs-dist/build/pdf'];
