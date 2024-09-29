@@ -3,9 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>choose the subject</title>
+    <title>Separate Page</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+            color: #000000;
+            flex-direction: column;
+            position: relative;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            font-size: 3rem;
+            color: inherit; /* Inherit color from body */
+            text-align: center;
+            font-family: Helvetica, sans-serif;
+            font-weight: lighter;
+        }
+        .logo {
+            position: absolute;
+            top: 20px; /* Position from the top */
+            left: 20px; /* Position from the left */
+        }
+        .box-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between the boxes */
+            margin-top: 50px; /* Space above the boxes */
+        }
+        .rounded-box {
+            background-color: #f5f5fa; /* Light background */
+            border-radius: 15px; /* Rounded corners */
+            padding: 20px;
+            text-align: center;
+            box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
+            width: 200px; /* Fixed width for the boxes */
+            transition: transform 0.3s; /* Animation effect */
+        }
+        .rounded-box:hover {
+            transform: scale(1.05); /* Slight scale on hover */
+        }
+        .button-container {
+            position: absolute;
+            bottom: 20px; /* Position at the bottom */
+            right: 20px; /* Align to the right */
+        }
+        .button-24 {
+            background-color: transparent;
+            background-image: linear-gradient(#fff, #f5f5fa);
+            border: 0 solid #003dff;
+            border-radius: 22px;
+            box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
+            color: #000000;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Hind, system-ui, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            font-weight: 400;
+            margin: 4px;
+            padding: 10px 16px; /* Make it slimmer */
+            text-align: center;
+            transition: all .2s ease-out;
+            height: 20px; /* Adjust height */
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    
+    <a href="index.html" class="logo">
+        <img src="LOGO.png" alt="Logo" style="width: 30px; height: 30px;"> <!-- Adjust the logo size as needed -->
+    </a>
+
+
+    <div class="box-container">
+        <div class="rounded-box">
+            <a href="check-essays.html" style="text-decoration: none; color: inherit;">Check Your Essays</a>
+        </div>
+        <div class="rounded-box">
+            <a href="eco-mcq.html" style="text-decoration: none; color: inherit;">Eco MCQ</a>
+        </div>
+
 </body>
 </html>

@@ -22,19 +22,7 @@
             color: inherit; /* Inherit color from body */
             text-align: center;
             font-family: Helvetica, sans-serif;
-            font-weight:lighter;
-            
-        }
-        .rect-box {
-            color: inherit; /* Inherit color from body */
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            font-family: Helvetica, sans-serif;
-            font-size: small;
-            padding: 10px;
-            text-align: left; /* Align text to the left */
-            width: auto; /* Adjust width as needed */
+            font-weight: lighter;
         }
         .button-container {
             position: absolute;
@@ -64,14 +52,64 @@
             box-shadow: rgba(37, 44, 97, .15) 0 8px 22px 0, rgba(93, 100, 148, .2) 0 4px 6px 0;
             transform: scale(1.1);
         }
+
+        /* Popup styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; 
+            z-index: 1; 
+            bottom: 20px; /* Position at the bottom */
+            left: 20px; /* Align to the left */
+            width: auto; 
+            background-color: #fefefe; /* White background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            border-radius: 5px; /* Rounded corners */
+            opacity: 0; /* Start as invisible */
+            transform: translateY(20px); /* Start position for animation */
+            animation: rise-up 0.5s forwards; /* Apply animation */
+        }
+
+        @keyframes rise-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content {
+            padding: 10px;
+            display: flex;
+            align-items: center; /* Align items vertically */
+            justify-content: space-between; /* Space between content and close button */
+        }
+        .close {
+            color: #aaa;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px; /* Space between text and X */
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <h1>welcome to <span style="color:yellowgreen; font-family: cursive; font-weight:600; font-size:4rem;">i</span><span style="font-weight: 380; font-family: cursive; font-size:4rem;">cos</span></h1>
 
-    <div class="rect-box">
-        <img id="themeImage" src="black.png" alt="Image description" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 10px;">
-        <p style="display: inline;">We don't use any cookies</p>
+    <!-- The Modal -->
+    <div id="cookieModal" class="modal">
+        <div class="modal-content">
+            <img id="themeImage" src="black.png" alt="Image description" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 10px;">
+            <p style="display: inline; margin: 0;">We don't use any cookies</p>
+            <span class="close" id="closeModal">&times;</span>
+        </div>
     </div>
 
     <div class="button-container">
@@ -80,21 +118,29 @@
         </a>
     </div>
 
-
     <script>
-        function showCard(event) {
-            event.preventDefault();
-            const card = document.getElementById('card');
-            const overlay = document.getElementById('overlay');
-            card.classList.add('show');
-            overlay.classList.add('show');
+        // Get the modal
+        var modal = document.getElementById("cookieModal");
+        
+        // Get the <span> element that closes the modal
+        var closeModal = document.getElementById("closeModal");
+
+        // Show the modal after the page loads
+        window.onload = function() {
+            modal.style.display = "block";
+            modal.style.animation = "rise-up 0.5s forwards"; // Trigger the animation
         }
 
-        function hideCard() {
-            const card = document.getElementById('card');
-            const overlay = document.getElementById('overlay');
-            card.classList.remove('show');
-            overlay.classList.remove('show');
+        // When the user clicks on <span> (x), close the modal
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </body>
