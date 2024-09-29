@@ -1,0 +1,321 @@
+/* CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Root Variables for Colors */
+:root {
+    --primary-color: #2c3e50;    /* Navy blue */
+    --secondary-color: #18bc9c;  /* Teal */
+    --accent-color: #ff6f61;     /* Coral */
+    --text-color: #ffffff;
+}
+
+/* Global Styles */
+body, html {
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+    background-color: var(--primary-color);
+}
+
+/* Navigation Bar */
+.navbar {
+    position: fixed;
+    width: 100%;
+    background-color: rgba(44, 62, 80, 0.9);
+    padding: 10px 0;
+    top: 0;
+    z-index: 10;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.navbar .logo {
+    color: #ffffff;
+    font-size: 1.5rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.navbar .nav-links li {
+    margin-left: 20px;
+}
+
+.navbar .nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.navbar .nav-links a:hover {
+    text-decoration: underline;
+}
+
+.navbar .menu-toggle {
+    display: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+    background-image: url('economics-background.jpg'); /* Replace with your image */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    color: #ffffff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 70px; /* To offset the fixed navbar */
+}
+
+.hero h1 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    animation: fadeInUp 1s ease forwards;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-weight: 300;
+    animation: fadeInUp 1s ease forwards;
+    animation-delay: 0.2s;
+}
+
+.hero .logo {
+    color: var(--accent-color);
+}
+
+.button-24 {
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.button-24:hover {
+    background-color: #ff8f81;
+}
+
+.button-24::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.button-24:hover::after {
+    left: 0;
+}
+
+/* Modal Popup */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(44, 62, 80, 0.9);
+    color: #ffffff;
+    padding: 20px;
+    animation: slide-up 0.5s forwards;
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.modal-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-content p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Testimonials Section */
+.testimonials {
+    background-color: #f4f4f4;
+    color: #333333;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.testimonials h2 {
+    margin-bottom: 40px;
+    font-size: 2rem;
+}
+
+.testimonial {
+    max-width: 600px;
+    margin: 0 auto 30px;
+}
+
+.testimonial p {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: #555555;
+}
+
+.testimonial h4 {
+    margin-top: 15px;
+    font-weight: 700;
+}
+
+/* Call-to-Action Section */
+.cta {
+    background-color: var(--secondary-color);
+    color: #ffffff;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.cta h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.cta .button-24 {
+    background-color: #ffffff;
+    color: var(--secondary-color);
+}
+
+.cta .button-24:hover {
+    background-color: #e6e6e6;
+}
+
+/* Footer Section */
+footer {
+    background-color: #2c3e50;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer p {
+    margin: 10px 0;
+}
+
+footer .social-media {
+    list-style: none;
+    display: flex;
+}
+
+footer .social-media li {
+    margin: 0 10px;
+}
+
+footer .social-media a {
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+
+footer .social-media a:hover {
+    color: var(--secondary-color);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+    }
+
+    .navbar .nav-links {
+        display: none;
+        flex-direction: column;
+        background-color: rgba(44, 62, 80, 0.9);
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        text-align: right;
+        padding-right: 20px;
+    }
+
+    .navbar .nav-links.active {
+        display: flex;
+    }
+
+    .navbar .nav-links li {
+        margin: 15px 0;
+    }
+
+    .navbar .menu-toggle {
+        display: block;
+    }
+}
+
+@media (min-width: 769px) {
+    .navbar .menu-toggle {
+        display: none;
+    }
+}

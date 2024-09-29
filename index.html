@@ -1,147 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>icos</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #ffffff;
-            color: #000000;
-            flex-direction: column;
-            position: relative;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        h1 {
-            font-size: 3rem;
-            color: inherit; /* Inherit color from body */
-            text-align: center;
-            font-family: Helvetica, sans-serif;
-            font-weight: lighter;
-        }
-        .button-container {
-            position: absolute;
-            bottom: 20px; /* Position at the bottom */
-            right: 20px; /* Align to the right */
-        }
+    <title>iCos - Interactive Economics Quizzes</title>
 
-        .button-24 {
-            background-color: transparent;
-            background-image: linear-gradient(#fff, #f5f5fa);
-            border: 0 solid #003dff;
-            border-radius: 22px;
-            box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
-            color: #000000;
-            cursor: pointer;
-            display: inline-block;
-            font-family: Hind, system-ui, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-            font-weight: 400;
-            margin: 4px;
-            padding: 10px 16px; /* Make it slimmer */
-            text-align: center;
-            transition: all .2s ease-out;
-            height: 20px; /* Adjust height */
-            text-decoration: none;
-        }
-        .button-24:hover {
-            box-shadow: rgba(37, 44, 97, .15) 0 8px 22px 0, rgba(93, 100, 148, .2) 0 4px 6px 0;
-            transform: scale(1.1);
-        }
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
 
-        /* Popup styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; 
-            z-index: 1; 
-            bottom: 20px; /* Position at the bottom */
-            left: 20px; /* Align to the left */
-            width: auto; 
-            background-color: #fefefe; /* White background */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
-            border-radius: 5px; /* Rounded corners */
-            opacity: 0; /* Start as invisible */
-            transform: translateY(20px); /* Start position for animation */
-            animation: rise-up 0.5s forwards; /* Apply animation */
-        }
+    <!-- Font Awesome for Icons (Optional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-eNfyJd/9HDe2kPtYCPO+Cq3z+z+nYsqOPpHgZjD7QYXMTLdk/t1z1Nq8W67pEJpK" crossorigin="anonymous">
 
-        @keyframes rise-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-        .modal-content {
-            padding: 10px;
-            display: flex;
-            align-items: center; /* Align items vertically */
-            justify-content: space-between; /* Space between content and close button */
-        }
-        .close {
-            color: #aaa;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-left: 10px; /* Space between text and X */
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-        }
-    </style>
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>welcome to <span style="color:yellowgreen; font-family: cursive; font-weight:600; font-size:4rem;">i</span><span style="font-weight: 380; font-family: cursive; font-size:4rem;">cos</span></h1>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">iCos</a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Quizzes</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
 
-    <!-- The Modal -->
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Welcome to <span class="logo">iCos</span></h1>
+        <p>Challenge yourself with our interactive economics quizzes!</p>
+        <a href="choose.html" class="button-24">Get Started →</a>
+    </div>
+
+    <!-- Modal Popup -->
     <div id="cookieModal" class="modal">
         <div class="modal-content">
-            <img id="themeImage" src="black.png" alt="Image description" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 10px;">
-            <p style="display: inline; margin: 0;">We don't use any cookies</p>
-            <span class="close" id="closeModal">&times;</span>
+            <p>We don't use any cookies</p>
+            <button class="close" id="closeModal" aria-label="Close modal">&times;</button>
         </div>
     </div>
 
-    <div class="button-container">
-        <a href="choose.html" class="button-24" role="button">
-            <span class="text">Start → </span>
-        </a>
-    </div>
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <h2>What Our Users Say</h2>
+        <div class="testimonial">
+            <p>"iCos has significantly improved my understanding of economics."</p>
+            <h4>- Jane Doe</h4>
+        </div>
+        <div class="testimonial">
+            <p>"The quizzes are engaging and informative. Highly recommended!"</p>
+            <h4>- John Smith</h4>
+        </div>
+    </section>
 
-    <script>
-        // Get the modal
-        var modal = document.getElementById("cookieModal");
-        
-        // Get the <span> element that closes the modal
-        var closeModal = document.getElementById("closeModal");
+    <!-- Call-to-Action Section -->
+    <section class="cta">
+        <h2>Ready to Test Your Knowledge?</h2>
+        <a href="choose.html" class="button-24">Start Quizzing →</a>
+    </section>
 
-        // Show the modal after the page loads
-        window.onload = function() {
-            modal.style.display = "block";
-            modal.style.animation = "rise-up 0.5s forwards"; // Trigger the animation
-        }
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 iCos. All rights reserved.</p>
+            <ul class="social-media">
+                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+            </ul>
+        </div>
+    </footer>
 
-        // When the user clicks on <span> (x), close the modal
-        closeModal.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
