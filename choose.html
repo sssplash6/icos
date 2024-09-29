@@ -17,13 +17,6 @@
             position: relative;
             transition: background-color 0.3s, color 0.3s;
         }
-        h1 {
-            font-size: 3rem;
-            color: inherit; /* Inherit color from body */
-            text-align: center;
-            font-family: Helvetica, sans-serif;
-            font-weight: lighter;
-        }
         .logo {
             position: absolute;
             top: 20px; /* Position from the top */
@@ -42,33 +35,20 @@
             text-align: center;
             box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
             width: 200px; /* Fixed width for the boxes */
+            height: 200px; /* Fixed height for the boxes */
             transition: transform 0.3s; /* Animation effect */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center items horizontally */
+            justify-content: center; /* Center items vertically */
         }
         .rounded-box:hover {
             transform: scale(1.05); /* Slight scale on hover */
         }
-        .button-container {
-            position: absolute;
-            bottom: 20px; /* Position at the bottom */
-            right: 20px; /* Align to the right */
-        }
-        .button-24 {
-            background-color: transparent;
-            background-image: linear-gradient(#fff, #f5f5fa);
-            border: 0 solid #003dff;
-            border-radius: 22px;
-            box-shadow: rgba(37, 44, 97, .15) 0 4px 11px 0, rgba(93, 100, 148, .2) 0 1px 3px 0;
-            color: #000000;
-            cursor: pointer;
-            display: inline-block;
-            font-family: Hind, system-ui, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-            font-weight: 400;
-            margin: 4px;
-            padding: 10px 16px; /* Make it slimmer */
-            text-align: center;
-            transition: all .2s ease-out;
-            height: 20px; /* Adjust height */
-            text-decoration: none;
+        .box-image {
+            width: 40px; /* Set a fixed size for the images */
+            height: 40px; /* Set a fixed size for the images */
+            margin-bottom: 10px; /* Space between the image and text */
         }
     </style>
 </head>
@@ -77,14 +57,15 @@
         <img src="LOGO.png" alt="Logo" style="width: 30px; height: 30px;"> <!-- Adjust the logo size as needed -->
     </a>
 
-
     <div class="box-container">
         <div class="rounded-box">
+            <img src="essay-icon.png" alt="Check Your Essays" class="box-image"> <!-- Replace with your image path -->
             <a href="check-essays.html" style="text-decoration: none; color: inherit;">Check Your Essays</a>
         </div>
         <div class="rounded-box">
+            <img src="test.png" alt="Eco MCQ" class="box-image"> <!-- Replace with your image path -->
             <a href="eco-mcq.html" style="text-decoration: none; color: inherit;">Eco MCQ</a>
         </div>
-
+    </div>
 </body>
 </html>
