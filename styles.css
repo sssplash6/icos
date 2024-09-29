@@ -19,6 +19,12 @@ body, html {
     font-family: 'Montserrat', sans-serif;
     color: var(--text-color);
     background-color: var(--primary-color);
+    scroll-behavior: smooth;
+}
+
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #ffffff;
 }
 
 /* Navigation Bar */
@@ -41,9 +47,13 @@ body, html {
 
 .navbar .logo {
     color: #ffffff;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     text-decoration: none;
     font-weight: 700;
+    /* Added styling to make "iCos" more appealing */
+    background: linear-gradient(90deg, #ff6f61, #ff8f81);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .navbar .nav-links {
@@ -74,7 +84,7 @@ body, html {
 
 /* Hero Section */
 .hero {
-    background-image: url('economics-background.jpg'); /* Replace with your image */
+    background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -84,27 +94,54 @@ body, html {
     flex-direction: column;
     justify-content: center;
     padding-top: 70px; /* To offset the fixed navbar */
+    position: relative;
+    overflow: hidden;
 }
 
 .hero h1 {
     font-size: 4rem;
     margin-bottom: 20px;
     font-weight: 700;
-    animation: fadeInUp 1s ease forwards;
+    color: #ffffff;
+    animation: fadeInDown 1s ease-out;
+}
+
+.hero h1 .logo {
+    /* Enhanced the "iCos" word */
+    background: linear-gradient(90deg, #ff6f61, #ff8f81);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
 
 .hero p {
     font-size: 1.5rem;
     margin-bottom: 30px;
     font-weight: 300;
-    animation: fadeInUp 1s ease forwards;
+    animation: fadeInDown 1s ease-out;
     animation-delay: 0.2s;
 }
 
-.hero .logo {
-    color: var(--accent-color);
+.hero::before {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+    transform: translate(-25%, -25%);
+    animation: rotate 20s linear infinite;
 }
 
+@keyframes rotate {
+    from {
+        transform: rotate(0deg) translate(-25%, -25%);
+    }
+    to {
+        transform: rotate(360deg) translate(-25%, -25%);
+    }
+}
+
+/* Button Styles */
 .button-24 {
     background-color: var(--accent-color);
     color: #fff;
@@ -142,21 +179,26 @@ body, html {
     display: none;
     position: fixed;
     z-index: 100;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: rgba(44, 62, 80, 0.9);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 500px;
+    background-color: rgba(44, 62, 80, 0.95);
     color: #ffffff;
     padding: 20px;
-    animation: slide-up 0.5s forwards;
+    border-radius: 10px;
+    animation: fadeIn 0.5s forwards;
 }
 
-@keyframes slide-up {
+@keyframes fadeIn {
     from {
-        transform: translateY(100%);
+        opacity: 0;
+        transform: translate(-50%, -60%);
     }
     to {
-        transform: translateY(0);
+        opacity: 1;
+        transform: translate(-50%, -50%);
     }
 }
 
@@ -177,57 +219,6 @@ body, html {
     color: #ffffff;
     font-size: 1.5rem;
     cursor: pointer;
-}
-
-/* Testimonials Section */
-.testimonials {
-    background-color: #f4f4f4;
-    color: #333333;
-    padding: 50px 0;
-    text-align: center;
-}
-
-.testimonials h2 {
-    margin-bottom: 40px;
-    font-size: 2rem;
-}
-
-.testimonial {
-    max-width: 600px;
-    margin: 0 auto 30px;
-}
-
-.testimonial p {
-    font-size: 1.2rem;
-    font-style: italic;
-    color: #555555;
-}
-
-.testimonial h4 {
-    margin-top: 15px;
-    font-weight: 700;
-}
-
-/* Call-to-Action Section */
-.cta {
-    background-color: var(--secondary-color);
-    color: #ffffff;
-    padding: 50px 0;
-    text-align: center;
-}
-
-.cta h2 {
-    margin-bottom: 20px;
-    font-size: 2rem;
-}
-
-.cta .button-24 {
-    background-color: #ffffff;
-    color: var(--secondary-color);
-}
-
-.cta .button-24:hover {
-    background-color: #e6e6e6;
 }
 
 /* Footer Section */
@@ -268,10 +259,10 @@ footer .social-media a:hover {
 }
 
 /* Animations */
-@keyframes fadeInUp {
+@keyframes fadeInDown {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-50px);
     }
     to {
         opacity: 1;
