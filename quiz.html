@@ -25,6 +25,8 @@
             --primary-color: #2c3e50;    /* Navy blue */
             --secondary-color: #18bc9c;  /* Teal */
             --accent-color: #ff6f61;     /* Coral */
+            --correct-color: #28a745;    /* Green */
+            --incorrect-color: #dc3545;  /* Red */
             --text-color: #ffffff;
         }
 
@@ -49,21 +51,6 @@
             top: 0;
             width: 100%;
             z-index: 10;
-        }
-
-        /* Alert for Exam Cancellation */
-        .alert {
-            display: none;
-            background-color: #ff6f61;
-            color: #ffffff;
-            padding: 10px;
-            text-align: center;
-            font-size: 18px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 11;
         }
 
         /* Main content */
@@ -145,6 +132,19 @@
             color: #ffffff;
         }
 
+        /* Correct and Incorrect Styles */
+        .options button.correct {
+            background-color: var(--correct-color);
+            color: #ffffff;
+            border-color: var(--correct-color);
+        }
+
+        .options button.incorrect {
+            background-color: var(--incorrect-color);
+            color: #ffffff;
+            border-color: var(--incorrect-color);
+        }
+
         /* Submit Button */
         .submit-button {
             margin-top: 20px;
@@ -164,51 +164,28 @@
             background-color: #1ca085;
         }
 
-        /* Result Modal */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 20;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(44, 62, 80, 0.9); /* Modal background */
+        /* Result Buttons */
+        .result-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
         }
 
-        .modal-content {
-            background-color: #f9f9f9;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            color: #333333;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-        }
-
-        .modal-content p {
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-
-        .modal-content button {
-            background-color: var(--accent-color);
+        .result-buttons button {
+            background-color: var(--secondary-color);
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px;
             font-size: 1rem;
             border: none;
             border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
             cursor: pointer;
+            width: 48%;
         }
 
-        .modal-content button:hover {
-            background-color: #ff8f81;
+        .result-buttons button:hover {
+            background-color: #1ca085;
         }
 
         /* Responsive Styles */
@@ -225,10 +202,6 @@
             .options {
                 justify-content: center;
             }
-
-            .modal-content {
-                margin-top: 50%;
-            }
         }
     </style>
 </head>
@@ -241,15 +214,6 @@
     <!-- Alert for Exam Cancellation -->
     <div class="alert" id="alert">
         Your exam has been canceled due to window switching or exiting full-screen mode.
-    </div>
-
-    <!-- Result Modal -->
-    <div id="result-modal" class="modal">
-        <div class="modal-content">
-            <h2>Test Results</h2>
-            <p id="result-message"></p>
-            <button id="reset-button">Reset Test</button>
-        </div>
     </div>
 
     <div class="quiz-container" id="quiz-container">
@@ -408,50 +372,72 @@
             let score = 0;
             let totalScore = Object.keys(correctAnswers).length;
 
+            // Disable interaction and show correct/incorrect answers
             for (let i = 1; i <= totalQuestions; i++) {
-                const userAnswer = userAnswers[`question-${i}`] || 'No Answer';
+                const userAnswer = userAnswers[`question-${i}`] || null;
                 const correctAnswer = correctAnswers[`question-${i}`];
+                const optionsDiv = document.querySelector(`.question:nth-child(${i}) .options`);
+                const optionButtons = optionsDiv.querySelectorAll('button');
+
+                optionButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.remove('selected');
+
+                    const option = btn.getAttribute('data-option');
+
+                    if (option === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+
+                    if (userAnswer === option && userAnswer !== correctAnswer) {
+                        btn.classList.add('incorrect');
+                    }
+                });
 
                 if (userAnswer === correctAnswer) {
                     score++;
                 }
             }
 
-            // Display results in modal
-            const resultModal = document.getElementById('result-modal');
-            const resultMessage = document.getElementById('result-message');
-            resultMessage.textContent = `You scored ${score} out of ${totalScore}.`;
-            resultModal.style.display = 'block';
-
-            // Disable interaction
-            const allOptionButtons = document.querySelectorAll('.options button');
-            allOptionButtons.forEach(btn => btn.disabled = true);
+            // Remove submit button
             const submitButton = document.querySelector('.submit-button');
-            submitButton.disabled = true;
+            submitButton.remove();
+
+            // Display results
+            const resultMessage = document.createElement('p');
+            resultMessage.style.textAlign = 'center';
+            resultMessage.style.fontSize = '1.2rem';
+            resultMessage.style.marginTop = '10px';
+            resultMessage.textContent = `You scored ${score} out of ${totalScore}.`;
+
+            answerSheet.appendChild(resultMessage);
+
+            // Add Home and Reset Test buttons
+            const resultButtonsDiv = document.createElement('div');
+            resultButtonsDiv.classList.add('result-buttons');
+
+            const homeButton = document.createElement('button');
+            homeButton.textContent = 'Home';
+            homeButton.addEventListener('click', () => {
+                window.location.href = 'choose.html';
+            });
+
+            const resetButton = document.createElement('button');
+            resetButton.textContent = 'Reset Test';
+            resetButton.addEventListener('click', resetQuiz);
+
+            resultButtonsDiv.appendChild(homeButton);
+            resultButtonsDiv.appendChild(resetButton);
+
+            answerSheet.appendChild(resultButtonsDiv);
         }
 
         // Reset functionality
-        const resetButton = document.getElementById('reset-button');
-        resetButton.addEventListener('click', resetQuiz);
-
         function resetQuiz() {
-            // Close the modal
-            const resultModal = document.getElementById('result-modal');
-            resultModal.style.display = 'none';
-
             // Reset user answers
             userAnswers = {};
 
-            // Enable interaction
-            const allOptionButtons = document.querySelectorAll('.options button');
-            allOptionButtons.forEach(btn => {
-                btn.disabled = false;
-                btn.classList.remove('selected');
-            });
-            const submitButton = document.querySelector('.submit-button');
-            submitButton.disabled = false;
-
-            // Reset timer
+            // Reset quiz content
             initializeQuiz();
         }
 
