@@ -51,6 +51,21 @@
             z-index: 10;
         }
 
+        /* Alert for Exam Cancellation */
+        .alert {
+            display: none;
+            background-color: #ff6f61;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 11;
+        }
+
         /* Main content */
         .quiz-container {
             display: flex;
@@ -223,6 +238,11 @@
         <!-- Timer will display here if in Exam or Custom mode -->
     </div>
 
+    <!-- Alert for Exam Cancellation -->
+    <div class="alert" id="alert">
+        Your exam has been canceled due to window switching or exiting full-screen mode.
+    </div>
+
     <!-- Result Modal -->
     <div id="result-modal" class="modal">
         <div class="modal-content">
@@ -301,6 +321,12 @@
                 timeLeft = 60 * 60; // 1 hour in seconds
                 timerElement.textContent = 'Time Left: 60:00';
                 startTimer();
+
+                // Request full-screen mode
+                requestFullscreen();
+
+                // Prevent window switching
+                preventWindowSwitching();
             } else if (mode === 'custom' && customTimer) {
                 timeLeft = parseInt(customTimer) * 60; // Convert minutes to seconds
                 timerElement.textContent = `Time Left: ${customTimer}:00`;
@@ -310,6 +336,7 @@
             }
 
             function startTimer() {
+                clearInterval(timerInterval); // Clear any existing timer
                 timerInterval = setInterval(() => {
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
@@ -326,6 +353,7 @@
 
             // Generate the Answer Sheet
             const answerSheet = document.getElementById('answer-sheet');
+            answerSheet.innerHTML = ''; // Clear previous content
 
             for (let i = 1; i <= totalQuestions; i++) {
                 const questionDiv = document.createElement('div');
@@ -370,6 +398,11 @@
         function submitAnswers() {
             // Stop the timer
             clearInterval(timerInterval);
+
+            // Exit full-screen mode if in exam mode
+            if (mode === 'exam') {
+                exitFullscreen();
+            }
 
             // Calculate score
             let score = 0;
@@ -420,6 +453,69 @@
 
             // Reset timer
             initializeQuiz();
+        }
+
+        // Request Full-Screen Mode
+        function requestFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { /* Firefox */
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Exit Full-Screen Mode
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { /* Firefox */
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE/Edge */
+                document.msExitFullscreen();
+            }
+        }
+
+        // Prevent Window Switching in Exam Mode
+        function preventWindowSwitching() {
+            let examActive = true;
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden' && examActive) {
+                    examActive = false;
+                    examCanceled();
+                }
+            });
+
+            // Detect exiting full-screen mode
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement && examActive) {
+                    examActive = false;
+                    examCanceled();
+                }
+            });
+        }
+
+        function examCanceled() {
+            // Stop the timer
+            clearInterval(timerInterval);
+
+            // Display alert
+            const alertElement = document.getElementById('alert');
+            alertElement.style.display = 'block';
+
+            // Hide the quiz content
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.style.display = 'none';
+
+            // Exit full-screen mode
+            exitFullscreen();
         }
     </script>
 </body>
