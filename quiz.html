@@ -289,6 +289,7 @@
         let userAnswers = {};
         const totalQuestions = 30; // Adjust as needed
         let timerInterval; // For clearing the timer
+        let examActive = false; // For tracking exam state
 
         // Fetch correct answers
         fetch(answersPath)
@@ -410,16 +411,21 @@
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             document.removeEventListener('fullscreenchange', handleFullscreenChange);
 
+            examActive = false; // Set examActive to false
+
             // Calculate score
             let score = 0;
             let totalScore = Object.keys(correctAnswers).length;
 
             // Disable interaction and show correct/incorrect answers
-            for (let i = 1; i <= totalQuestions; i++) {
+            const questionDivs = document.querySelectorAll('.question');
+
+            questionDivs.forEach((questionDiv, index) => {
+                const i = index + 1; // question number
                 const userAnswer = userAnswers[`question-${i}`] || null;
                 const correctAnswer = correctAnswers[`question-${i}`];
-                const optionsDiv = document.querySelector(`.question:nth-child(${i + 1}) .options`); // +1 due to the h2 element
-                const optionButtons = optionsDiv.querySelectorAll('button');
+
+                const optionButtons = questionDiv.querySelectorAll('button');
 
                 optionButtons.forEach(btn => {
                     btn.disabled = true;
@@ -427,23 +433,25 @@
 
                     const option = btn.getAttribute('data-option');
 
-                    if (userAnswer === correctAnswer && userAnswer === option) {
+                    if (userAnswer === option && option === correctAnswer) {
                         // Chosen and correct
                         btn.classList.add('correct');
                         score++;
-                    } else if (userAnswer === option && userAnswer !== correctAnswer) {
+                    } else if (userAnswer === option && option !== correctAnswer) {
                         // Chosen and wrong
                         btn.classList.add('incorrect');
-                    } else if (option === correctAnswer && userAnswer !== correctAnswer) {
+                    } else if (userAnswer !== option && option === correctAnswer) {
                         // Not chosen but correct
                         btn.classList.add('not-chosen-correct');
                     }
                 });
-            }
+            });
 
             // Remove submit button
             const submitButton = document.querySelector('.submit-button');
-            submitButton.remove();
+            if (submitButton) {
+                submitButton.remove();
+            }
 
             // Display results at the top
             const timerElement = document.getElementById('timer');
@@ -475,6 +483,9 @@
         function resetQuiz() {
             // Reset user answers
             userAnswers = {};
+
+            // Reset examActive
+            examActive = false;
 
             // Reset quiz content
             initializeQuiz();
@@ -509,26 +520,24 @@
 
         // Prevent Window Switching in Exam Mode
         function preventWindowSwitching() {
-            let examActive = true;
+            examActive = true;
 
             window.addEventListener('blur', examCanceled);
-
             document.addEventListener('visibilitychange', handleVisibilityChange);
-
             document.addEventListener('fullscreenchange', handleFullscreenChange);
+        }
 
-            function handleVisibilityChange() {
-                if (document.visibilityState === 'hidden' && examActive) {
-                    examActive = false;
-                    examCanceled();
-                }
+        function handleVisibilityChange() {
+            if (document.visibilityState === 'hidden' && examActive) {
+                examActive = false;
+                examCanceled();
             }
+        }
 
-            function handleFullscreenChange() {
-                if (!document.fullscreenElement && examActive) {
-                    examActive = false;
-                    examCanceled();
-                }
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && examActive) {
+                examActive = false;
+                examCanceled();
             }
         }
 
