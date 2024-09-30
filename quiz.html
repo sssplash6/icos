@@ -149,6 +149,53 @@
             background-color: #1ca085;
         }
 
+        /* Result Modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 20;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(44, 62, 80, 0.9); /* Modal background */
+        }
+
+        .modal-content {
+            background-color: #f9f9f9;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            color: #333333;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .modal-content button {
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #ff8f81;
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .quiz-container {
@@ -163,6 +210,10 @@
             .options {
                 justify-content: center;
             }
+
+            .modal-content {
+                margin-top: 50%;
+            }
         }
     </style>
 </head>
@@ -170,6 +221,15 @@
     <!-- Timer -->
     <div class="timer" id="timer">
         <!-- Timer will display here if in Exam or Custom mode -->
+    </div>
+
+    <!-- Result Modal -->
+    <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <h2>Test Results</h2>
+            <p id="result-message"></p>
+            <button id="reset-button">Reset Test</button>
+        </div>
     </div>
 
     <div class="quiz-container" id="quiz-container">
@@ -203,7 +263,7 @@
 
         // Construct file paths
         const pdfPath = `pdfs/${year}_${season}_${component}.pdf`;
-        const answersPath = `answers/2024_summer_zone1.json`;
+        const answersPath = `answers/${year}_${season}_${component}.json`;
 
         // Set the PDF source
         document.getElementById('pdf-frame').src = pdfPath;
@@ -212,6 +272,7 @@
         let correctAnswers = {};
         let userAnswers = {};
         const totalQuestions = 30; // Adjust as needed
+        let timerInterval; // For clearing the timer
 
         // Fetch correct answers
         fetch(answersPath)
@@ -235,7 +296,6 @@
             // Timer setup
             const timerElement = document.getElementById('timer');
             let timeLeft; // in seconds
-            let timerInterval;
 
             if (mode === 'exam') {
                 timeLeft = 60 * 60; // 1 hour in seconds
@@ -305,33 +365,61 @@
             submitButton.classList.add('submit-button');
             submitButton.addEventListener('click', submitAnswers);
             answerSheet.appendChild(submitButton);
+        }
 
-            function submitAnswers() {
-                // Stop the timer
-                clearInterval(timerInterval);
+        function submitAnswers() {
+            // Stop the timer
+            clearInterval(timerInterval);
 
-                // Calculate score
-                let score = 0;
-                let totalScore = Object.keys(correctAnswers).length;
+            // Calculate score
+            let score = 0;
+            let totalScore = Object.keys(correctAnswers).length;
 
-                for (let i = 1; i <= totalQuestions; i++) {
-                    const userAnswer = userAnswers[`question-${i}`] || 'No Answer';
-                    const correctAnswer = correctAnswers[`question-${i}`];
+            for (let i = 1; i <= totalQuestions; i++) {
+                const userAnswer = userAnswers[`question-${i}`] || 'No Answer';
+                const correctAnswer = correctAnswers[`question-${i}`];
 
-                    if (userAnswer === correctAnswer) {
-                        score++;
-                    }
+                if (userAnswer === correctAnswer) {
+                    score++;
                 }
-
-                // Display results
-                alert(`You scored ${score} out of ${totalScore}.`);
-                // Optionally, provide detailed feedback
-
-                // Optionally, disable further interaction
-                const allOptionButtons = document.querySelectorAll('.options button');
-                allOptionButtons.forEach(btn => btn.disabled = true);
-                submitButton.disabled = true;
             }
+
+            // Display results in modal
+            const resultModal = document.getElementById('result-modal');
+            const resultMessage = document.getElementById('result-message');
+            resultMessage.textContent = `You scored ${score} out of ${totalScore}.`;
+            resultModal.style.display = 'block';
+
+            // Disable interaction
+            const allOptionButtons = document.querySelectorAll('.options button');
+            allOptionButtons.forEach(btn => btn.disabled = true);
+            const submitButton = document.querySelector('.submit-button');
+            submitButton.disabled = true;
+        }
+
+        // Reset functionality
+        const resetButton = document.getElementById('reset-button');
+        resetButton.addEventListener('click', resetQuiz);
+
+        function resetQuiz() {
+            // Close the modal
+            const resultModal = document.getElementById('result-modal');
+            resultModal.style.display = 'none';
+
+            // Reset user answers
+            userAnswers = {};
+
+            // Enable interaction
+            const allOptionButtons = document.querySelectorAll('.options button');
+            allOptionButtons.forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('selected');
+            });
+            const submitButton = document.querySelector('.submit-button');
+            submitButton.disabled = false;
+
+            // Reset timer
+            initializeQuiz();
         }
     </script>
 </body>
