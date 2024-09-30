@@ -27,6 +27,7 @@
             --accent-color: #ff6f61;     /* Coral */
             --correct-color: #28a745;    /* Green */
             --incorrect-color: #dc3545;  /* Red */
+            --not-chosen-correct-color: #ffc107; /* Yellow */
             --text-color: #ffffff;
         }
 
@@ -40,8 +41,8 @@
             overflow: hidden; /* Hide scrollbars to prevent scrolling during exam */
         }
 
-        /* Timer */
-        .timer {
+        /* Timer / Results */
+        .timer, .results {
             background-color: #2c3e50;
             color: #ffffff;
             padding: 10px;
@@ -51,19 +52,47 @@
             top: 0;
             width: 100%;
             z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .results {
+            display: none;
+        }
+
+        /* Result Buttons */
+        .result-buttons {
+            margin-left: 20px;
+        }
+
+        .result-buttons button {
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .result-buttons button:hover {
+            background-color: #1ca085;
         }
 
         /* Main content */
         .quiz-container {
             display: flex;
             height: 100vh;
-            padding-top: 50px; /* Adjust for timer */
+            padding-top: 50px; /* Adjust for timer/results */
             overflow: hidden;
         }
 
         /* PDF Viewer */
         .pdf-viewer {
-            width: 80%; /* Increased width to 80% */
+            width: 80%;
             height: 100%;
             overflow: hidden;
         }
@@ -76,7 +105,7 @@
 
         /* Answer Sheet */
         .answer-sheet {
-            width: 20%; /* Reduced width to 20% */
+            width: 20%;
             height: 100%;
             overflow-y: auto;
             background-color: #f9f9f9;
@@ -145,6 +174,12 @@
             border-color: var(--incorrect-color);
         }
 
+        .options button.not-chosen-correct {
+            background-color: var(--not-chosen-correct-color);
+            color: #ffffff;
+            border-color: var(--not-chosen-correct-color);
+        }
+
         /* Submit Button */
         .submit-button {
             margin-top: 20px;
@@ -164,30 +199,6 @@
             background-color: #1ca085;
         }
 
-        /* Result Buttons */
-        .result-buttons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .result-buttons button {
-            background-color: var(--secondary-color);
-            color: #fff;
-            padding: 10px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-            width: 48%;
-        }
-
-        .result-buttons button:hover {
-            background-color: #1ca085;
-        }
-
         /* Responsive Styles */
         @media (max-width: 768px) {
             .quiz-container {
@@ -202,6 +213,22 @@
             .options {
                 justify-content: center;
             }
+
+            .timer, .results {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .result-buttons {
+                margin-top: 10px;
+                margin-left: 0;
+            }
+
+            .result-buttons button {
+                margin-left: 0;
+                margin-right: 10px;
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
@@ -209,6 +236,11 @@
     <!-- Timer -->
     <div class="timer" id="timer">
         <!-- Timer will display here if in Exam or Custom mode -->
+    </div>
+
+    <!-- Results -->
+    <div class="results" id="results">
+        <!-- Results will be displayed here after submission -->
     </div>
 
     <!-- Alert for Exam Cancellation -->
@@ -279,7 +311,12 @@
         function initializeQuiz() {
             // Timer setup
             const timerElement = document.getElementById('timer');
+            const resultsElement = document.getElementById('results');
             let timeLeft; // in seconds
+
+            // Show timer and hide results
+            timerElement.style.display = 'flex';
+            resultsElement.style.display = 'none';
 
             if (mode === 'exam') {
                 timeLeft = 60 * 60; // 1 hour in seconds
@@ -317,7 +354,7 @@
 
             // Generate the Answer Sheet
             const answerSheet = document.getElementById('answer-sheet');
-            answerSheet.innerHTML = ''; // Clear previous content
+            answerSheet.innerHTML = '<h2>Answer Sheet</h2>'; // Reset content
 
             for (let i = 1; i <= totalQuestions; i++) {
                 const questionDiv = document.createElement('div');
@@ -368,6 +405,11 @@
                 exitFullscreen();
             }
 
+            // Allow window switching after submission
+            window.removeEventListener('blur', examCanceled);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+
             // Calculate score
             let score = 0;
             let totalScore = Object.keys(correctAnswers).length;
@@ -376,7 +418,7 @@
             for (let i = 1; i <= totalQuestions; i++) {
                 const userAnswer = userAnswers[`question-${i}`] || null;
                 const correctAnswer = correctAnswers[`question-${i}`];
-                const optionsDiv = document.querySelector(`.question:nth-child(${i}) .options`);
+                const optionsDiv = document.querySelector(`.question:nth-child(${i + 1}) .options`); // +1 due to the h2 element
                 const optionButtons = optionsDiv.querySelectorAll('button');
 
                 optionButtons.forEach(btn => {
@@ -385,51 +427,48 @@
 
                     const option = btn.getAttribute('data-option');
 
-                    if (option === correctAnswer) {
+                    if (userAnswer === correctAnswer && userAnswer === option) {
+                        // Chosen and correct
                         btn.classList.add('correct');
-                    }
-
-                    if (userAnswer === option && userAnswer !== correctAnswer) {
+                        score++;
+                    } else if (userAnswer === option && userAnswer !== correctAnswer) {
+                        // Chosen and wrong
                         btn.classList.add('incorrect');
+                    } else if (option === correctAnswer && userAnswer !== correctAnswer) {
+                        // Not chosen but correct
+                        btn.classList.add('not-chosen-correct');
                     }
                 });
-
-                if (userAnswer === correctAnswer) {
-                    score++;
-                }
             }
 
             // Remove submit button
             const submitButton = document.querySelector('.submit-button');
             submitButton.remove();
 
-            // Display results
-            const resultMessage = document.createElement('p');
-            resultMessage.style.textAlign = 'center';
-            resultMessage.style.fontSize = '1.2rem';
-            resultMessage.style.marginTop = '10px';
-            resultMessage.textContent = `You scored ${score} out of ${totalScore}.`;
+            // Display results at the top
+            const timerElement = document.getElementById('timer');
+            const resultsElement = document.getElementById('results');
 
-            answerSheet.appendChild(resultMessage);
+            const percentage = Math.round((score / totalScore) * 100);
 
-            // Add Home and Reset Test buttons
-            const resultButtonsDiv = document.createElement('div');
-            resultButtonsDiv.classList.add('result-buttons');
+            resultsElement.innerHTML = `
+                <span>You scored ${score} out of ${totalScore} (${percentage}%).</span>
+                <div class="result-buttons">
+                    <button id="home-button">Home</button>
+                    <button id="reset-button">Reset Test</button>
+                </div>
+            `;
 
-            const homeButton = document.createElement('button');
-            homeButton.textContent = 'Home';
-            homeButton.addEventListener('click', () => {
+            // Show results and hide timer
+            timerElement.style.display = 'none';
+            resultsElement.style.display = 'flex';
+
+            // Add event listeners to buttons
+            document.getElementById('home-button').addEventListener('click', () => {
                 window.location.href = 'choose.html';
             });
 
-            const resetButton = document.createElement('button');
-            resetButton.textContent = 'Reset Test';
-            resetButton.addEventListener('click', resetQuiz);
-
-            resultButtonsDiv.appendChild(homeButton);
-            resultButtonsDiv.appendChild(resetButton);
-
-            answerSheet.appendChild(resultButtonsDiv);
+            document.getElementById('reset-button').addEventListener('click', resetQuiz);
         }
 
         // Reset functionality
@@ -472,20 +511,25 @@
         function preventWindowSwitching() {
             let examActive = true;
 
-            document.addEventListener('visibilitychange', () => {
+            window.addEventListener('blur', examCanceled);
+
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+            function handleVisibilityChange() {
                 if (document.visibilityState === 'hidden' && examActive) {
                     examActive = false;
                     examCanceled();
                 }
-            });
+            }
 
-            // Detect exiting full-screen mode
-            document.addEventListener('fullscreenchange', () => {
+            function handleFullscreenChange() {
                 if (!document.fullscreenElement && examActive) {
                     examActive = false;
                     examCanceled();
                 }
-            });
+            }
         }
 
         function examCanceled() {
