@@ -3,94 +3,361 @@
 <head>
     <!-- Required meta tags -->
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Quiz Options - iCos</title>
 
-    <!-- Include any required stylesheets or scripts -->
-    <!-- (You can include your styles and scripts here) -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons (Optional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-eNfyJd/9HDe2kPtYCPO+Cq3z+z+nYsqOPpHgZjD7QYXMTLdk/t1z1Nq8W67pEJpK" crossorigin="anonymous">
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Inline CSS Stylesheet -->
     <style>
-        /* Basic styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        h1 {
-            text-align: center;
+        /* Root Variables for Colors */
+        :root {
+            --primary-color: #2c3e50;    /* Navy blue */
+            --secondary-color: #18bc9c;  /* Teal */
+            --accent-color: #ff6f61;     /* Coral */
+            --text-color: #ffffff;
         }
 
-        form {
-            max-width: 400px;
+        /* Global Styles */
+        body, html {
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            background-color: var(--primary-color);
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            background-color: rgba(44, 62, 80, 0.9);
+            padding: 10px 0;
+            top: 0;
+            z-index: 10;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
             margin: 0 auto;
         }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
 
-        select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+        .navbar .logo img {
+            height: 30px; /* Adjust the height as needed */
+            margin-right: 10px; /* Space between the icon and text */
         }
 
-        button {
-            margin-top: 20px;
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-            background-color: #2c3e50;
+        .navbar .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            /* Gradient text effect */
+            background: linear-gradient(90deg, #ff6f61, #ff8f81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar .nav-links li {
+            margin-left: 20px;
+        }
+
+        .navbar .nav-links a {
             color: #ffffff;
-            border: none;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .navbar .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar .menu-toggle {
+            display: none;
+            color: #ffffff;
+            font-size: 1.5rem;
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: #1a252f;
+        /* Selection Form Section */
+        .selection-form {
+            padding-top: 100px; /* Adjust to offset the fixed navbar */
+            min-height: calc(100vh - 70px); /* Ensure full viewport height minus navbar */
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .selection-form .container {
+            width: 90%;
+            margin: 0 auto;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .selection-form h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .selection-form form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .form-group select,
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .form-group select:focus,
+        .form-group input[type="number"]:focus {
+            outline: none;
+            border: 2px solid var(--accent-color);
+        }
+
+        /* Hide the custom timer input by default */
+        #custom-timer-container {
+            display: none;
+        }
+
+        .selection-form .button-24 {
+            margin-top: 20px;
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .selection-form .button-24:hover {
+            background-color: #ff8f81;
+        }
+
+        /* Footer Section */
+        footer {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .selection-form h1 {
+                font-size: 2rem;
+            }
+
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                background-color: rgba(44, 62, 80, 0.9);
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 100%;
+                text-align: right;
+                padding-right: 20px;
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                margin: 15px 0;
+            }
+
+            .navbar .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .navbar .menu-toggle {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Select Your Quiz Options</h1>
-    <form action="quiz.html" method="GET">
-        <!-- Year Selection -->
-        <label for="year">Select Year:</label>
-        <select name="year" id="year" required>
-            <option value="" disabled selected>Select Year</option>
-            <!-- Add available years -->
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <!-- Add more years as needed -->
-        </select>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Logo">
+                <span class="logo-text">iCos</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <!-- Removed "Quizzes" from the navbar -->
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
 
-        <!-- Season Selection -->
-        <label for="season">Select Season:</label>
-        <select name="season" id="season" required>
-            <option value="" disabled selected>Select Season</option>
-            <option value="winter">Winter (Jan-Feb)</option>
-            <option value="summer">Summer (May-Jun)</option>
-            <option value="fall">Fall (Oct-Nov)</option>
-            <!-- Add more seasons if needed -->
-        </select>
+    <!-- Selection Form Section -->
+    <div class="selection-form">
+        <div class="container">
+            <h1>Select Your Quiz Options</h1>
+            <form action="quiz.html" method="GET">
+                <!-- Year Selection -->
+                <div class="form-group">
+                    <label for="year">Select Year:</label>
+                    <select name="year" id="year" required>
+                        <option value="" disabled selected>Select Year</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <!-- Add more years as needed -->
+                    </select>
+                </div>
 
-        <!-- Component Selection -->
-        <label for="component">Select Component:</label>
-        <select name="component" id="component" required>
-            <option value="" disabled selected>Select Component</option>
-            <option value="zone1">Zone 1</option>
-            <option value="zone2">Zone 2</option>
-            <option value="zone3">Zone 3</option>
-            <!-- Add more components as needed -->
-        </select>
+                <!-- Season Selection -->
+                <div class="form-group">
+                    <label for="season">Select Season:</label>
+                    <select name="season" id="season" required>
+                        <option value="" disabled selected>Select Season</option>
+                        <option value="winter">Jan Feb</option>
+                        <option value="summer">May June</option>
+                        <option value="fall">Oct Nov</option>
+                    </select>
+                </div>
 
-        <!-- Submit Button -->
-        <button type="submit">Start Quiz</button>
-    </form>
+                <!-- Component Selection -->
+                <div class="form-group">
+                    <label for="component">Select Component:</label>
+                    <select name="component" id="component" required>
+                        <option value="" disabled selected>Select Component</option>
+                        <option value="zone1">Zone 1</option>
+                        <option value="zone2">Zone 2</option>
+                        <option value="zone3">Zone 3</option>
+                    </select>
+                </div>
+
+                <!-- Mode Selection -->
+                <div class="form-group">
+                    <label for="mode">Select Mode:</label>
+                    <select name="mode" id="mode" required>
+                        <option value="" disabled selected>Select Mode</option>
+                        <option value="exam">Exam</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+
+                <!-- Custom Timer Input (only visible if Custom mode is selected) -->
+                <div class="form-group" id="custom-timer-container">
+                    <label for="custom-timer">Enter Timer (in minutes):</label>
+                    <input type="number" name="custom-timer" id="custom-timer" min="1" placeholder="e.g., 30" />
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="button-24">Start Quiz →</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 iCos. All rights are not reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Inline JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Mode Selection and Custom Timer Display
+        const modeSelect = document.getElementById('mode');
+        const customTimerContainer = document.getElementById('custom-timer-container');
+        const customTimerInput = document.getElementById('custom-timer');
+
+        modeSelect.addEventListener('change', () => {
+            if (modeSelect.value === 'custom') {
+                customTimerContainer.style.display = 'block';
+                customTimerInput.required = true;
+            } else {
+                customTimerContainer.style.display = 'none';
+                customTimerInput.required = false;
+                customTimerInput.value = '';
+            }
+        });
+    </script>
 </body>
 </html>

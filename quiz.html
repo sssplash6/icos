@@ -5,26 +5,65 @@
     <meta charset="UTF-8">
     <title>Quiz - iCos</title>
 
-    <!-- Include any required stylesheets or scripts -->
-    <!-- (You can include your styles and scripts here) -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Inline CSS Stylesheet -->
     <style>
-        /* Basic styles */
-        body {
+        /* CSS Reset */
+        * {
             margin: 0;
-            font-family: Arial, sans-serif;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        /* Root Variables for Colors */
+        :root {
+            --primary-color: #2c3e50;    /* Navy blue */
+            --secondary-color: #18bc9c;  /* Teal */
+            --accent-color: #ff6f61;     /* Coral */
+            --text-color: #ffffff;
+        }
+
+        /* Global Styles */
+        body, html {
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            background-color: var(--primary-color);
+            scroll-behavior: smooth;
+            overflow: hidden; /* Hide scrollbars to prevent scrolling during exam */
+        }
+
+        /* Timer */
+        .timer {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+        }
+
+        /* Main content */
         .quiz-container {
             display: flex;
             height: 100vh;
+            padding-top: 50px; /* Adjust for timer */
+            overflow: hidden;
         }
 
         /* PDF Viewer */
         .pdf-viewer {
-            width: 70%;
+            width: 80%; /* Increased width to 80% */
             height: 100%;
+            overflow: hidden;
         }
 
         .pdf-viewer iframe {
@@ -33,164 +72,267 @@
             border: none;
         }
 
-        /* Question List */
-        .question-list {
-            width: 30%;
+        /* Answer Sheet */
+        .answer-sheet {
+            width: 20%; /* Reduced width to 20% */
             height: 100%;
             overflow-y: auto;
-            padding: 20px;
             background-color: #f9f9f9;
+            color: #333333;
+            padding: 10px;
+            border-left: 1px solid #cccccc;
         }
 
-        .question-list h2 {
-            margin-bottom: 20px;
+        .answer-sheet h2 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            text-align: center;
         }
 
         .question {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .question p {
+        .question-number {
             font-weight: bold;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .options button {
-            display: inline-block;
-            margin-right: 10px;
-            margin-bottom: 5px;
-            padding: 10px 15px;
-            font-size: 14px;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            font-size: 1rem;
             border: 1px solid #cccccc;
-            border-radius: 5px;
+            border-radius: 50%;
             background-color: #ffffff;
+            color: #333333;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            text-align: center;
         }
 
         .options button:hover {
-            background-color: #2c3e50;
+            background-color: var(--accent-color);
             color: #ffffff;
         }
 
         .options button.selected {
-            background-color: #2c3e50;
+            background-color: var(--accent-color);
             color: #ffffff;
         }
 
         /* Submit Button */
         .submit-button {
             margin-top: 20px;
-            padding: 15px;
-            width: 100%;
-            font-size: 16px;
-            background-color: #ff6f61;
-            color: #ffffff;
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 10px;
+            font-size: 1rem;
             border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
             cursor: pointer;
+            width: 100%;
         }
 
         .submit-button:hover {
-            background-color: #e55b50;
+            background-color: #1ca085;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .quiz-container {
+                flex-direction: column;
+            }
+
+            .pdf-viewer, .answer-sheet {
+                width: 100%;
+                height: 50vh;
+            }
+
+            .options {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="quiz-container">
+    <!-- Timer -->
+    <div class="timer" id="timer">
+        <!-- Timer will display here if in Exam or Custom mode -->
+    </div>
+
+    <div class="quiz-container" id="quiz-container">
         <!-- PDF Viewer -->
         <div class="pdf-viewer">
             <iframe id="pdf-frame" src=""></iframe>
         </div>
 
-        <!-- Question List -->
-        <div class="question-list" id="question-list">
-            <h2>Questions</h2>
+        <!-- Answer Sheet -->
+        <div class="answer-sheet" id="answer-sheet">
+            <h2>Answer Sheet</h2>
             <!-- Questions with options will be generated here -->
         </div>
     </div>
 
+    <!-- Inline JavaScript -->
     <script>
         // Retrieve URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const year = urlParams.get('year');
         const season = urlParams.get('season');
         const component = urlParams.get('component');
+        const mode = urlParams.get('mode');
+        const customTimer = urlParams.get('custom-timer');
 
         // Validate the parameters
-        if (!year || !season || !component) {
+        if (!year || !season || !component || !mode) {
             alert('Invalid selection. Please go back and select all options.');
             window.location.href = 'choose.html';
-        } else {
-            // Construct the PDF file path
-            const pdfPath = `pdfs/${year}_${season}_${component}.pdf`;
-
-            // Set the src of the iframe to display the PDF
-            const pdfFrame = document.getElementById('pdf-frame');
-            pdfFrame.src = pdfPath;
         }
 
-        // Generate the Question List
-        const questionList = document.getElementById('question-list');
+        // Construct file paths
+        const pdfPath = `pdfs/${year}_${season}_${component}.pdf`;
+        const answersPath = `answers/2024_summer_zone1.json`;
 
-        // Assume each paper has 30 questions
+        // Set the PDF source
+        document.getElementById('pdf-frame').src = pdfPath;
+
+        // Initialize variables
+        let correctAnswers = {};
+        let userAnswers = {};
         const totalQuestions = 30; // Adjust as needed
-        const userAnswers = {}; // To store user's answers
 
-        for (let i = 1; i <= totalQuestions; i++) {
-            const questionDiv = document.createElement('div');
-            questionDiv.classList.add('question');
-
-            const questionText = document.createElement('p');
-            questionText.textContent = `Question ${i}:`;
-
-            const optionsDiv = document.createElement('div');
-            optionsDiv.classList.add('options');
-
-            ['A', 'B', 'C', 'D'].forEach((option) => {
-                const optionButton = document.createElement('button');
-                optionButton.textContent = option;
-                optionButton.setAttribute('data-question', i);
-                optionButton.setAttribute('data-option', option);
-
-                // Handle option click
-                optionButton.addEventListener('click', () => {
-                    // Save the user's answer
-                    userAnswers[`question-${i}`] = option;
-
-                    // Highlight the selected option
-                    const allOptions = optionsDiv.querySelectorAll('button');
-                    allOptions.forEach((btn) => btn.classList.remove('selected'));
-                    optionButton.classList.add('selected');
-                });
-
-                optionsDiv.appendChild(optionButton);
+        // Fetch correct answers
+        fetch(answersPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Answer key not found.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                correctAnswers = data;
+                initializeQuiz();
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Answer key not found for the selected paper.');
+                window.location.href = 'choose.html';
             });
 
-            questionDiv.appendChild(questionText);
-            questionDiv.appendChild(optionsDiv);
-            questionList.appendChild(questionDiv);
+        function initializeQuiz() {
+            // Timer setup
+            const timerElement = document.getElementById('timer');
+            let timeLeft; // in seconds
+            let timerInterval;
+
+            if (mode === 'exam') {
+                timeLeft = 60 * 60; // 1 hour in seconds
+                timerElement.textContent = 'Time Left: 60:00';
+                startTimer();
+            } else if (mode === 'custom' && customTimer) {
+                timeLeft = parseInt(customTimer) * 60; // Convert minutes to seconds
+                timerElement.textContent = `Time Left: ${customTimer}:00`;
+                startTimer();
+            } else {
+                timerElement.style.display = 'none'; // Hide the timer if not in exam or custom mode
+            }
+
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        submitAnswers(); // Automatically submit answers
+                    } else {
+                        timeLeft--;
+                        const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                        const seconds = (timeLeft % 60).toString().padStart(2, '0');
+                        timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+                    }
+                }, 1000);
+            }
+
+            // Generate the Answer Sheet
+            const answerSheet = document.getElementById('answer-sheet');
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const questionNumber = document.createElement('div');
+                questionNumber.classList.add('question-number');
+                questionNumber.textContent = i;
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                ['A', 'B', 'C', 'D'].forEach(option => {
+                    const optionButton = document.createElement('button');
+                    optionButton.textContent = option;
+                    optionButton.setAttribute('data-question', i);
+                    optionButton.setAttribute('data-option', option);
+
+                    optionButton.addEventListener('click', () => {
+                        userAnswers[`question-${i}`] = option;
+                        const allOptions = optionsDiv.querySelectorAll('button');
+                        allOptions.forEach(btn => btn.classList.remove('selected'));
+                        optionButton.classList.add('selected');
+                    });
+
+                    optionsDiv.appendChild(optionButton);
+                });
+
+                questionDiv.appendChild(questionNumber);
+                questionDiv.appendChild(optionsDiv);
+                answerSheet.appendChild(questionDiv);
+            }
+
+            // Add submit button
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit Answers';
+            submitButton.classList.add('submit-button');
+            submitButton.addEventListener('click', submitAnswers);
+            answerSheet.appendChild(submitButton);
+
+            function submitAnswers() {
+                // Stop the timer
+                clearInterval(timerInterval);
+
+                // Calculate score
+                let score = 0;
+                let totalScore = Object.keys(correctAnswers).length;
+
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const userAnswer = userAnswers[`question-${i}`] || 'No Answer';
+                    const correctAnswer = correctAnswers[`question-${i}`];
+
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                    }
+                }
+
+                // Display results
+                alert(`You scored ${score} out of ${totalScore}.`);
+                // Optionally, provide detailed feedback
+
+                // Optionally, disable further interaction
+                const allOptionButtons = document.querySelectorAll('.options button');
+                allOptionButtons.forEach(btn => btn.disabled = true);
+                submitButton.disabled = true;
+            }
         }
-
-        // Add a submit button
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Submit Answers';
-        submitButton.classList.add('submit-button');
-
-        submitButton.addEventListener('click', () => {
-            // Process the user's answers
-            console.log('User Answers:', userAnswers);
-
-            // For now, display a message
-            alert('Your answers have been submitted!');
-
-            // Optionally, clear the selections
-            // Reset userAnswers object
-            // for (let key in userAnswers) delete userAnswers[key];
-            // Remove 'selected' class from all option buttons
-            // const allOptionButtons = document.querySelectorAll('.options button');
-            // allOptionButtons.forEach((btn) => btn.classList.remove('selected'));
-        });
-
-        questionList.appendChild(submitButton);
     </script>
 </body>
 </html>
