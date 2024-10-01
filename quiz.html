@@ -256,6 +256,7 @@
     <script>
         // Retrieve URL parameters
         const urlParams = new URLSearchParams(window.location.search);
+        const paper = urlParams.get('paper');
         const year = urlParams.get('year');
         const season = urlParams.get('season');
         const component = urlParams.get('component');
@@ -269,8 +270,8 @@
         }
 
         // Construct file paths
-        const pdfPath = `pdfs/${year}_${season}_${component}.pdf`;
-        const answersPath = `answers/${year}_${season}_${component}.json`;
+        const pdfPath = `pdfs/${paper}_${year}_${season}_${component}.pdf`;
+        const answersPath = `answers/${paper}_${year}_${season}_${component}.json`;
 
         // Set the PDF source
         document.getElementById('pdf-frame').src = pdfPath;
