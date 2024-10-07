@@ -3,11 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Choose Your Option</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Root Variables for Colors */
+        :root {
+            --primary-color: #2c3e50;    /* Navy blue */
+            --secondary-color: #18bc9c;  /* Teal */
+            --accent-color: #ff6f61;     /* Coral */
+            --text-color: #ffffff;
+            --coming-soon-overlay: rgba(0, 0, 0, 0.5);
+            --hover-glow: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Global Styles */
+        body, html {
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            background-color: var(--primary-color);
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            background-color: rgba(44, 62, 80, 0.9);
+            padding: 10px 0;
+            top: 0;
+            z-index: 10;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .navbar .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .navbar .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff6f61, #ff8f81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar .nav-links li {
+            margin-left: 20px;
+        }
+
+        .navbar .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .navbar .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar .menu-toggle {
+            display: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Selection Form Section */
+        .selection-form {
+            padding-top: 150px; /* Adjust to offset the fixed navbar */
+            min-height: calc(100vh - 70px); /* Ensure full viewport height minus navbar */
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .selection-form .subject-options {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 1200px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .subject-option {
+            text-align: center;
+            padding: 20px;
+            width: 220px;
+            height: 250px;
+            background-color: #34495e;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .subject-option:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px var(--hover-glow);
+        }
+
+        .subject-option .subject-link {
+            text-decoration: none;
+            color: inherit;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .subject-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .subject-option:hover .subject-icon {
+            transform: scale(1.1);
+        }
+
+        .button-24 {
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+        }
+
+        .button-24:hover {
+            background-color: #ff8f81;
+        }
+
+        .button-24::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .button-24:hover::after {
+            left: 0;
+        }
+
+        .coming-soon {
+            background-color: #ccc;
+            color: #333;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: not-allowed;
+            z-index: 5;
+        }
+
+        .coming-soon::after {
+            content: 'Coming Soon';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 1.2rem;
+            color: var(--coming-soon-overlay);
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .selection-form .subject-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .subject-option {
+                width: 90%;
+                max-width: 300px;
+            }
+
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                background-color: rgba(44, 62, 80, 0.9);
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 100%;
+                text-align: right;
+                padding-right: 20px;
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                margin: 15px 0;
+            }
+
+            .navbar .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .navbar .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Choose:</h1>
-    <a href="choose_eco.html">eco</a>
-    <a href="choose_phy.html">phy</a>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="LOGO.png" alt="Logo">
+                <span class="logo-text">iCos</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Selection Form Section -->
+    <div class="selection-form">
+        <div class="subject-options">
+            <div class="subject-option">
+                <a href="choose_eco.html" class="subject-link"></a>
+                <i class="fas fa-chart-line subject-icon"></i>
+                <span class="button-24">Economics</span>
+            </div>
+
+            <div class="subject-option">
+                <a href="choose_phy.html" class="subject-link"></a>
+                <i class="fas fa-atom subject-icon"></i>
+                <span class="button-24">Physics (9702)</span>
+            </div>
+
+            <div class="subject-option">
+                <div class="subject-link"></div>
+                <i class="fas fa-leaf subject-icon"></i>
+                <div class="coming-soon">Biology</div>
+            </div>
+
+            <div class="subject-option">
+                <div class="subject-link"></div>
+                <i class="fas fa-flask subject-icon"></i>
+                <div class="coming-soon">Chemistry</div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
