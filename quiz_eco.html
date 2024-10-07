@@ -266,12 +266,12 @@
         // Validate the parameters
         if (!year || !season || !component || !mode) {
             alert('Invalid selection. Please go back and select all options.');
-            window.location.href = 'choose.html';
+            window.location.href = 'choose_eco.html';
         }
 
         // Construct file paths
-        const pdfPath = `pdfs/${paper}_${year}_${season}_${component}.pdf`;
-        const answersPath = `answers/${paper}_${year}_${season}_${component}.json`;
+        const pdfPath = `pdfs_eco/${paper}_${year}_${season}_${component}.pdf`;
+        const answersPath = `answers_eco/${paper}_${year}_${season}_${component}.json`;
 
         // Set the PDF source
         document.getElementById('pdf-frame').src = pdfPath;
@@ -298,7 +298,7 @@
             .catch(error => {
                 console.error(error);
                 alert('Answer key not found for the selected paper.');
-                window.location.href = 'choose.html';
+                window.location.href = 'choose_eco.html';
             });
 
         function initializeQuiz() {
@@ -462,7 +462,7 @@
 
             // Add event listener to home button
             document.getElementById('home-button').addEventListener('click', () => {
-                window.location.href = 'choose.html';
+                window.location.href = 'choose_eco.html';
             });
         }
 
