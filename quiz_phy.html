@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <title>Quiz - iCos</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Inline CSS Stylesheet -->
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Root Variables for Colors */
+        :root {
+            --primary-color: #2c3e50;          /* Navy blue */
+            --secondary-color: #18bc9c;        /* Teal */
+            --accent-color: #ff6f61;           /* Coral */
+            --correct-color: #28a745;          /* Green */
+            --incorrect-color: #dc3545;        /* Red */
+            --not-chosen-correct-color: #ffc107; /* Yellow */
+            --text-color: #ffffff;
+        }
+
+        /* Global Styles */
+        body, html {
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            background-color: var(--primary-color);
+            overflow: hidden; /* Hide scrollbars to prevent scrolling during exam */
+        }
+
+        /* Timer / Results */
+        .timer, .results {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .results {
+            background-color: var(--secondary-color);
+            flex-direction: column;
+        }
+
+        /* Result Score */
+        .results .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Home Button */
+        .home-button {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .home-button:hover {
+            background-color: #ff8566; /* Slightly lighter shade */
+            transform: translateY(-2px);
+        }
+
+        /* Main content */
+        .quiz-container {
+            display: flex;
+            height: 100vh;
+            padding-top: 50px; /* Adjust for timer */
+        }
+
+        /* PDF Viewer */
+        .pdf-viewer {
+            width: 80%;
+            height: 100%;
+        }
+
+        .pdf-viewer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Answer Sheet */
+        .answer-sheet {
+            width: 20%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            color: #333333;
+            padding: 10px;
+            border-left: 1px solid #cccccc;
+        }
+
+        .answer-sheet h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .options button {
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            font-size: 1rem;
+            border: 2px solid #cccccc;
+            border-radius: 50%;
+            background-color: #ffffff;
+            color: #333333;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+        }
+
+        .options button:hover {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .options button.selected {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+
+        /* Correct and Incorrect Styles */
+        .options button.correct {
+            background-color: var(--correct-color);
+            color: #ffffff;
+            border-color: var(--correct-color);
+        }
+
+        .options button.incorrect {
+            background-color: var(--incorrect-color);
+            color: #ffffff;
+            border-color: var(--incorrect-color);
+        }
+
+        .options button.not-chosen-correct {
+            background-color: var(--not-chosen-correct-color);
+            color: #ffffff;
+            border-color: var(--not-chosen-correct-color);
+        }
+
+        /* Submit Button */
+        .submit-button {
+            margin-top: 20px;
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 12px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #1ca085;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .quiz-container {
+                flex-direction: column;
+            }
+
+            .pdf-viewer, .answer-sheet {
+                width: 100%;
+                height: 50vh;
+            }
+
+            .timer {
+                position: relative;
+            }
+
+            .results {
+                padding: 20px;
+            }
+
+            .home-button {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer -->
+    <div class="timer" id="timer">
+        <!-- Timer or results will display here -->
+    </div>
+
+    <!-- Alert for Exam Cancellation -->
+    <div class="alert" id="alert">
+        Your exam has been canceled due to window switching or exiting full-screen mode.
+    </div>
+
+    <div class="quiz-container" id="quiz-container">
+        <!-- PDF Viewer -->
+        <div class="pdf-viewer">
+            <iframe id="pdf-frame" src=""></iframe>
+        </div>
+
+        <!-- Answer Sheet -->
+        <div class="answer-sheet" id="answer-sheet">
+            <h2>Answer Sheet</h2>
+            <!-- Questions with options will be generated here -->
+        </div>
+    </div>
+
+    <!-- Inline JavaScript -->
+    <script>
+        // Retrieve URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const paper = urlParams.get('paper');
+        const year = urlParams.get('year');
+        const season = urlParams.get('season');
+        const component = urlParams.get('component');
+        const mode = urlParams.get('mode');
+        const customTimer = urlParams.get('custom-timer');
+
+        // Validate the parameters
+        if (!year || !season || !component || !mode) {
+            alert('Invalid selection. Please go back and select all options.');
+            window.location.href = 'choose_eco.html';
+        }
+
+        // Construct file paths
+        const pdfPath = `pdfs_phy/${paper}_${year}_${season}_${component}.pdf`;
+        const answersPath = `answers_phy/${paper}_${year}_${season}_${component}.json`;
+
+        // Set the PDF source
+        document.getElementById('pdf-frame').src = pdfPath;
+
+        // Initialize variables
+        let correctAnswers = {};
+        let userAnswers = {};
+        const totalQuestions = 30; // Adjust as needed
+        let timerInterval; // For clearing the timer
+        let examActive = false; // For tracking exam state
+
+        // Fetch correct answers
+        fetch(answersPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Answer key not found.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                correctAnswers = data;
+                initializeQuiz();
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Answer key not found for the selected paper.');
+                window.location.href = 'choose_phyhtml';
+            });
+
+        function initializeQuiz() {
+            // Timer setup
+            const timerElement = document.getElementById('timer');
+            let timeLeft; // in seconds
+
+            // Reset timer element
+            timerElement.className = 'timer';
+
+            if (mode === 'exam') {
+                timeLeft = 60 * 60; // 1 hour in seconds
+                timerElement.textContent = 'Time Left: 60:00';
+                startTimer();
+
+                // Request full-screen mode
+                requestFullscreen();
+
+                // Prevent window switching
+                preventWindowSwitching();
+            } else if (mode === 'custom' && customTimer) {
+                timeLeft = parseInt(customTimer) * 60; // Convert minutes to seconds
+                timerElement.textContent = `Time Left: ${customTimer}:00`;
+                startTimer();
+            } else {
+                timerElement.style.display = 'none'; // Hide the timer if not in exam or custom mode
+            }
+
+            function startTimer() {
+                clearInterval(timerInterval); // Clear any existing timer
+                timerInterval = setInterval(() => {
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        submitAnswers(); // Automatically submit answers
+                    } else {
+                        timeLeft--;
+                        const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                        const seconds = (timeLeft % 60).toString().padStart(2, '0');
+                        timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+                    }
+                }, 1000);
+            }
+
+            // Generate the Answer Sheet
+            const answerSheet = document.getElementById('answer-sheet');
+            answerSheet.innerHTML = '<h2>Answer Sheet</h2>'; // Clear previous content
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const questionNumber = document.createElement('div');
+                questionNumber.classList.add('question-number');
+                questionNumber.textContent = i;
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                ['A', 'B', 'C', 'D'].forEach(option => {
+                    const optionButton = document.createElement('button');
+                    optionButton.textContent = option;
+                    optionButton.setAttribute('data-question', i);
+                    optionButton.setAttribute('data-option', option);
+
+                    optionButton.addEventListener('click', () => {
+                        userAnswers[`question-${i}`] = option;
+                        const allOptions = optionsDiv.querySelectorAll('button');
+                        allOptions.forEach(btn => btn.classList.remove('selected'));
+                        optionButton.classList.add('selected');
+                    });
+
+                    optionsDiv.appendChild(optionButton);
+                });
+
+                questionDiv.appendChild(questionNumber);
+                questionDiv.appendChild(optionsDiv);
+                answerSheet.appendChild(questionDiv);
+            }
+
+            // Add submit button
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit Answers';
+            submitButton.classList.add('submit-button');
+            submitButton.addEventListener('click', submitAnswers);
+            answerSheet.appendChild(submitButton);
+        }
+
+        function submitAnswers() {
+            // Stop the timer
+            clearInterval(timerInterval);
+
+            // Exit full-screen mode if in exam mode
+            if (mode === 'exam') {
+                exitFullscreen();
+            }
+
+            // Allow window switching after submission
+            window.removeEventListener('blur', examCanceled);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+
+            examActive = false; // Set examActive to false
+
+            // Calculate score
+            let score = 0;
+            let totalScore = Object.keys(correctAnswers).length;
+
+            // Disable interaction and show correct/incorrect answers
+            const questionDivs = document.querySelectorAll('.question');
+
+            questionDivs.forEach((questionDiv, index) => {
+                const i = index + 1; // question number
+                const userAnswer = userAnswers[`question-${i}`] || null;
+                const correctAnswer = correctAnswers[`question-${i}`];
+
+                const optionButtons = questionDiv.querySelectorAll('button');
+
+                optionButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.remove('selected');
+
+                    const option = btn.getAttribute('data-option');
+
+                    if (userAnswer === option && option === correctAnswer) {
+                        // Chosen and correct
+                        btn.classList.add('correct');
+                        score++;
+                    } else if (userAnswer === option && option !== correctAnswer) {
+                        // Chosen and wrong
+                        btn.classList.add('incorrect');
+                    } else if (!userAnswer && option === correctAnswer) {
+                        // Not chosen but correct (blank answer)
+                        btn.classList.add('not-chosen-correct');
+                    } else if (userAnswer !== option && option === correctAnswer && userAnswer !== correctAnswer) {
+                        // Not chosen but correct (user chose wrong answer)
+                        btn.classList.add('not-chosen-correct');
+                    }
+                });
+            });
+
+            // Remove submit button
+            const submitButton = document.querySelector('.submit-button');
+            if (submitButton) {
+                submitButton.remove();
+            }
+
+            // Display results at the top
+            const timerElement = document.getElementById('timer');
+
+            const percentage = Math.round((score / totalScore) * 100);
+
+            // Apply 'results' class to timer element
+            timerElement.className = 'results';
+
+            // Update timer element to display results
+            timerElement.innerHTML = `
+                <div class="score">You scored ${score} out of ${totalScore} (${percentage}%).</div>
+                <button id="home-button" class="home-button">Home</button>
+            `;
+
+            // Add event listener to home button
+            document.getElementById('home-button').addEventListener('click', () => {
+                window.location.href = 'choose_phy.html';
+            });
+        }
+
+        // Reset functionality
+        function resetQuiz() {
+            // Reset user answers
+            userAnswers = {};
+
+            // Reset examActive
+            examActive = false;
+
+            // Reset quiz content
+            initializeQuiz();
+        }
+
+        // Request Full-Screen Mode
+        function requestFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Exit Full-Screen Mode
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // Prevent Window Switching in Exam Mode
+        function preventWindowSwitching() {
+            examActive = true;
+
+            window.addEventListener('blur', examCanceled);
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+        }
+
+        function handleVisibilityChange() {
+            if (document.visibilityState === 'hidden' && examActive) {
+                examActive = false;
+                examCanceled();
+            }
+        }
+
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && examActive) {
+                examActive = false;
+                examCanceled();
+            }
+        }
+
+        function examCanceled() {
+            // Stop the timer
+            clearInterval(timerInterval);
+
+            // Display alert
+            const alertElement = document.getElementById('alert');
+            alertElement.style.display = 'block';
+
+            // Hide the quiz content
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.style.display = 'none';
+
+            // Exit full-screen mode
+            exitFullscreen();
+        }
+    </script>
+</body>
+</html>
