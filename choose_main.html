@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Choose Your Option</title>
     <style>
@@ -30,7 +29,7 @@
             height: 100%;
             font-family: 'Montserrat', sans-serif;
             color: var(--text-color);
-            background-color: var(--primary-color);
+            background: linear-gradient(to bottom right, #2c3e50, #34495e);
             scroll-behavior: smooth;
         }
 
@@ -38,10 +37,11 @@
         .navbar {
             position: fixed;
             width: 100%;
-            background-color: rgba(44, 62, 80, 0.9);
+            background-color: rgba(44, 62, 80, 0.95);
             padding: 10px 0;
             top: 0;
             z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
 
         .navbar .container {
@@ -84,10 +84,11 @@
             color: #ffffff;
             text-decoration: none;
             font-size: 1rem;
+            transition: color 0.3s ease;
         }
 
         .navbar .nav-links a:hover {
-            text-decoration: underline;
+            color: var(--secondary-color);
         }
 
         .navbar .menu-toggle {
@@ -99,10 +100,8 @@
 
         /* Selection Form Section */
         .selection-form {
-            padding-top: 150px; /* Adjust to offset the fixed navbar */
-            min-height: calc(100vh - 70px); /* Ensure full viewport height minus navbar */
-            background-color: var(--primary-color);
-            color: var(--text-color);
+            padding-top: 150px;
+            min-height: calc(100vh - 70px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -122,10 +121,10 @@
             padding: 20px;
             width: 220px;
             height: 250px;
-            background-color: #34495e;
+            background: linear-gradient(to top right, #34495e, #2c3e50);
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             overflow: hidden;
             cursor: pointer;
             position: relative;
@@ -134,6 +133,7 @@
         .subject-option:hover {
             transform: translateY(-10px);
             box-shadow: 0 8px 25px var(--hover-glow);
+            background: linear-gradient(to top right, #3c5972, #2c3e50);
         }
 
         .subject-option .subject-link {
@@ -151,11 +151,12 @@
             font-size: 3rem;
             margin-bottom: 15px;
             color: var(--secondary-color);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, color 0.3s ease;
         }
 
         .subject-option:hover .subject-icon {
             transform: scale(1.1);
+            color: #1abc9c;
         }
 
         .button-24 {
@@ -166,7 +167,7 @@
             border: none;
             border-radius: 5px;
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
             position: relative;
             overflow: hidden;
             display: inline-block;
@@ -176,21 +177,7 @@
 
         .button-24:hover {
             background-color: #ff8f81;
-        }
-
-        .button-24::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .button-24:hover::after {
-            left: 0;
+            transform: translateY(-3px);
         }
 
         .coming-soon {
@@ -311,5 +298,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Mobile menu toggle script
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
