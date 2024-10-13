@@ -62,6 +62,7 @@ body.dark-mode {
     /* Gradient text effect */
     background: linear-gradient(90deg, #ff6f61, #ff8f81);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -119,6 +120,7 @@ body.dark-mode {
     /* Enhanced the "iCos" word */
     background: linear-gradient(90deg, #ff6f61, #ff8f81);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
