@@ -58,7 +58,7 @@
         }
 
         /* Timer / Results */
-        .timer, .results {
+        .timer {
             background-color: var(--primary-color);
             color: #ffffff;
             padding: 10px;
@@ -69,70 +69,70 @@
             width: 100%;
             z-index: 10;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Pause Button */
+        .pause-button {
+            background-color: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 5px 10px;
+            font-size: 16px;
+            margin-top: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pause-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
             justify-content: center;
             align-items: center;
         }
 
-        .results {
-            background-color: var(--secondary-color);
-            flex-direction: column;
+        .modal-content {
+            background-color: var(--answer-sheet-bg);
+            color: var(--answer-sheet-text);
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
         }
 
-        /* Timer Buttons */
-        .timer-buttons {
-            position: absolute;
-            right: 10px;
+        .modal-content h2 {
+            margin-bottom: 20px;
         }
 
-        .timer-buttons button {
-            background-color: var(--accent-color);
-            color: #ffffff;
-            padding: 8px 12px;
-            margin-left: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* Night Mode Toggle */
-        .night-mode-toggle {
-            position: absolute;
-            left: 10px;
-        }
-
-        .night-mode-toggle button {
-            background-color: var(--accent-color);
-            color: #ffffff;
-            padding: 8px 12px;
-            margin-right: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* Result Score */
-        .results .score {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        /* Home Button */
-        .home-button {
+        .modal-content button {
             background-color: var(--accent-color);
             color: #ffffff;
             padding: 10px 20px;
-            font-size: 18px;
+            margin: 5px;
             border: none;
             border-radius: 30px;
             cursor: pointer;
+            font-size: 16px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .home-button:hover {
-            background-color: #ff8566; /* Slightly lighter shade */
+        .modal-content button:hover {
+            background-color: #ff8566;
             transform: translateY(-2px);
         }
 
@@ -140,7 +140,7 @@
         .quiz-container {
             display: flex;
             height: 100vh;
-            padding-top: 50px; /* Adjust for timer */
+            padding-top: 70px; /* Adjust for timer and pause button */
         }
 
         /* PDF Viewer */
@@ -270,46 +270,6 @@
             transform: translateY(-2px);
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 20;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: var(--answer-sheet-bg);
-            color: var(--answer-sheet-text);
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-        }
-
-        .modal-content button {
-            background-color: var(--accent-color);
-            color: #ffffff;
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
         /* Responsive Styles */
         @media (max-width: 768px) {
             .quiz-container {
@@ -325,12 +285,8 @@
                 position: relative;
             }
 
-            .results {
-                padding: 20px;
-            }
-
-            .home-button {
-                margin-top: 10px;
+            .modal-content {
+                margin-top: 50%;
             }
         }
     </style>
@@ -341,16 +297,22 @@
         <div class="night-mode-toggle">
             <button id="night-mode-button">Night Mode</button>
         </div>
-        <div id="timer-text">
-            <!-- Timer or results will display here -->
-        </div>
-        <div class="timer-buttons">
-            <button id="pause-button">Pause</button>
+        <div id="timer-text"><!-- Timer or results will display here --></div>
+        <button id="pause-button" class="pause-button">Pause</button>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="modal">
+        <div class="modal-content">
+            <h2>Your Results</h2>
+            <div id="results-content"><!-- Results will be inserted here --></div>
+            <button id="home-button">Home</button>
+            <button id="review-button">Review Answers</button>
         </div>
     </div>
 
     <!-- Alert for Exam Cancellation -->
-    <div class="alert" id="alert">
+    <div class="alert" id="alert" style="display: none;">
         Your exam has been canceled due to window switching or exiting full-screen mode.
     </div>
 
@@ -364,13 +326,6 @@
         <div class="answer-sheet" id="answer-sheet">
             <h2>Answer Sheet</h2>
             <!-- Questions with options will be generated here -->
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="modal" class="modal">
-        <div class="modal-content" id="modal-content">
-            <!-- Modal content will be injected here -->
         </div>
     </div>
 
@@ -405,8 +360,14 @@
         let timerInterval; // For clearing the timer
         let examActive = false; // For tracking exam state
         let timeLeft; // in seconds
-        let isPaused = false; // For pausing the timer
+        let timerPaused = false; // For pausing the timer
         let bookmarkedQuestions = new Set(); // For bookmarked questions
+
+        // Elements
+        const timerElement = document.getElementById('timer-text');
+        const pauseButton = document.getElementById('pause-button');
+        const nightModeButton = document.getElementById('night-mode-button');
+        const resultsModal = document.getElementById('results-modal');
 
         // Fetch correct answers
         fetch(answersPath)
@@ -428,12 +389,6 @@
 
         function initializeQuiz() {
             // Timer setup
-            const timerElement = document.getElementById('timer-text');
-            const pauseButton = document.getElementById('pause-button');
-
-            // Reset timer element
-            document.getElementById('timer').className = 'timer';
-
             if (mode === 'exam') {
                 timeLeft = 60 * 60; // 1 hour in seconds
                 timerElement.textContent = 'Time Left: 60:00';
@@ -456,10 +411,9 @@
             function startTimer() {
                 clearInterval(timerInterval); // Clear any existing timer
                 timerInterval = setInterval(() => {
-                    if (!isPaused) {
+                    if (!timerPaused) {
                         if (timeLeft <= 0) {
                             clearInterval(timerInterval);
-                            notifyTimeUp();
                             submitAnswers(); // Automatically submit answers
                         } else {
                             timeLeft--;
@@ -473,12 +427,11 @@
 
             // Pause/Resume Timer
             pauseButton.addEventListener('click', () => {
-                isPaused = !isPaused;
-                pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+                timerPaused = !timerPaused;
+                pauseButton.textContent = timerPaused ? 'Resume' : 'Pause';
             });
 
             // Night Mode Toggle
-            const nightModeButton = document.getElementById('night-mode-button');
             nightModeButton.addEventListener('click', () => {
                 document.body.classList.toggle('night-mode');
                 nightModeButton.textContent = document.body.classList.contains('night-mode') ? 'Day Mode' : 'Night Mode';
@@ -614,19 +567,49 @@
 
             // Display results in a modal
             const percentage = Math.round((score / totalScore) * 100);
-            showResultsModal(score, totalScore, percentage);
+            const resultsContent = document.getElementById('results-content');
+            resultsContent.innerHTML = `<p>You scored ${score} out of ${totalScore} (${percentage}%).</p>`;
+            resultsModal.style.display = 'block';
         }
 
-        // Reset functionality
-        function resetQuiz() {
-            // Reset user answers
-            userAnswers = {};
+        // Event listeners for Results Modal buttons
+        document.getElementById('home-button').addEventListener('click', () => {
+            resultsModal.style.display = 'none';
+            window.location.href = 'choose_phy.html';
+        });
 
-            // Reset examActive
-            examActive = false;
+        document.getElementById('review-button').addEventListener('click', () => {
+            resultsModal.style.display = 'none';
+            // Scroll to the top of the answer sheet
+            document.getElementById('answer-sheet').scrollTop = 0;
+        });
 
-            // Reset quiz content
-            initializeQuiz();
+        // Close Modals when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === resultsModal) {
+                resultsModal.style.display = 'none';
+            }
+        });
+
+        // Show Confirmation Modal
+        function showConfirmationModal() {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <h2>Are you sure you want to submit?</h2>
+                <button id="confirm-submit">Yes</button>
+                <button id="cancel-submit">No</button>
+            `;
+            modal.style.display = 'flex';
+
+            document.getElementById('confirm-submit').addEventListener('click', () => {
+                modal.style.display = 'none';
+                submitAnswers();
+            });
+
+            document.getElementById('cancel-submit').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
         }
 
         // Request Full-Screen Mode
@@ -693,66 +676,6 @@
 
             // Exit full-screen mode
             exitFullscreen();
-        }
-
-        // Show Confirmation Modal
-        function showConfirmationModal() {
-            const modal = document.getElementById('modal');
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
-                <h2>Are you sure you want to submit?</h2>
-                <button id="confirm-submit">Yes</button>
-                <button id="cancel-submit">No</button>
-            `;
-            modal.style.display = 'flex';
-
-            document.getElementById('confirm-submit').addEventListener('click', () => {
-                modal.style.display = 'none';
-                submitAnswers();
-            });
-
-            document.getElementById('cancel-submit').addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-        }
-
-        // Show Results Modal
-        function showResultsModal(score, totalScore, percentage) {
-            const modal = document.getElementById('modal');
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
-                <h2>You scored ${score} out of ${totalScore} (${percentage}%).</h2>
-                <button id="home-button" class="home-button">Home</button>
-            `;
-            modal.style.display = 'flex';
-
-            document.getElementById('home-button').addEventListener('click', () => {
-                window.location.href = 'choose_phy.html';
-            });
-        }
-
-        // Notification when time is up
-        function notifyTimeUp() {
-            if (Notification.permission === 'granted') {
-                new Notification('Time is up!', {
-                    body: 'Your allotted time for the quiz has ended.',
-                    icon: 'favicon.ico'
-                });
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        new Notification('Time is up!', {
-                            body: 'Your allotted time for the quiz has ended.',
-                            icon: 'favicon.ico'
-                        });
-                    }
-                });
-            }
-        }
-
-        // Request Notification Permission
-        if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-            Notification.requestPermission();
         }
     </script>
 </body>
