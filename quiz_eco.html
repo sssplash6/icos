@@ -29,6 +29,8 @@
             --incorrect-color: #dc3545;        /* Red */
             --not-chosen-correct-color: #ffc107; /* Yellow */
             --text-color: #ffffff;
+            --background-color: #f9f9f9;
+            --question-number-color: var(--primary-color);
         }
 
         /* Global Styles */
@@ -41,7 +43,7 @@
         }
 
         /* Timer / Results */
-        .timer, .results {
+        .timer {
             background-color: var(--primary-color);
             color: #ffffff;
             padding: 10px;
@@ -52,36 +54,70 @@
             width: 100%;
             z-index: 10;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
 
-        .results {
-            background-color: var(--secondary-color);
-            flex-direction: column;
+        /* Pause Button */
+        .pause-button {
+            background-color: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 5px 10px;
+            font-size: 16px;
+            margin-top: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        /* Result Score */
-        .results .score {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .pause-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Home Button */
-        .home-button {
+        /* Pop-up Modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--primary-color);
+            width: 80%;
+            max-width: 500px;
+            color: var(--primary-color);
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
             background-color: var(--accent-color);
             color: #ffffff;
             padding: 10px 20px;
-            font-size: 18px;
+            font-size: 1rem;
             border: none;
             border-radius: 30px;
             cursor: pointer;
+            margin: 10px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .home-button:hover {
-            background-color: #ff8566; /* Slightly lighter shade */
+        .modal-content button:hover {
+            background-color: #ff8566;
             transform: translateY(-2px);
         }
 
@@ -89,7 +125,7 @@
         .quiz-container {
             display: flex;
             height: 100vh;
-            padding-top: 50px; /* Adjust for timer */
+            padding-top: 70px; /* Adjust for timer and pause button */
         }
 
         /* PDF Viewer */
@@ -109,7 +145,7 @@
             width: 20%;
             height: 100%;
             overflow-y: auto;
-            background-color: #f9f9f9;
+            background-color: var(--background-color);
             color: #333333;
             padding: 10px;
             border-left: 1px solid #cccccc;
@@ -118,7 +154,7 @@
         .answer-sheet h2 {
             margin-bottom: 15px;
             font-size: 1.5rem;
-            color: var(--primary-color);
+            color: var(--question-number-color);
             text-align: center;
         }
 
@@ -130,7 +166,7 @@
             font-weight: bold;
             margin-bottom: 5px;
             text-align: center;
-            color: var(--primary-color);
+            color: var(--question-number-color);
             font-size: 1.1rem;
         }
 
@@ -218,12 +254,8 @@
                 position: relative;
             }
 
-            .results {
-                padding: 20px;
-            }
-
-            .home-button {
-                margin-top: 10px;
+            .modal-content {
+                margin-top: 50%;
             }
         }
     </style>
@@ -231,11 +263,22 @@
 <body>
     <!-- Timer -->
     <div class="timer" id="timer">
-        <!-- Timer or results will display here -->
+        <div id="timer-text"><!-- Timer will display here --></div>
+        <button id="pause-button" class="pause-button">Pause</button>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="modal">
+        <div class="modal-content">
+            <h2>Your Results</h2>
+            <div id="results-content"><!-- Results will be inserted here --></div>
+            <button id="home-button">Home</button>
+            <button id="review-button">Review Answers</button>
+        </div>
     </div>
 
     <!-- Alert for Exam Cancellation -->
-    <div class="alert" id="alert">
+    <div class="alert" id="alert" style="display: none;">
         Your exam has been canceled due to window switching or exiting full-screen mode.
     </div>
 
@@ -282,6 +325,13 @@
         const totalQuestions = 30; // Adjust as needed
         let timerInterval; // For clearing the timer
         let examActive = false; // For tracking exam state
+        let timeLeft; // in seconds
+        let timerPaused = false; // For pausing the timer
+
+        // Elements
+        const timerElement = document.getElementById('timer-text');
+        const pauseButton = document.getElementById('pause-button');
+        const resultsModal = document.getElementById('results-modal');
 
         // Fetch correct answers
         fetch(answersPath)
@@ -303,12 +353,6 @@
 
         function initializeQuiz() {
             // Timer setup
-            const timerElement = document.getElementById('timer');
-            let timeLeft; // in seconds
-
-            // Reset timer element
-            timerElement.className = 'timer';
-
             if (mode === 'exam') {
                 timeLeft = 60 * 60; // 1 hour in seconds
                 timerElement.textContent = 'Time Left: 60:00';
@@ -324,23 +368,8 @@
                 timerElement.textContent = `Time Left: ${customTimer}:00`;
                 startTimer();
             } else {
-                timerElement.style.display = 'none'; // Hide the timer if not in exam or custom mode
-            }
-
-            function startTimer() {
-                clearInterval(timerInterval); // Clear any existing timer
-                timerInterval = setInterval(() => {
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        alert('Time is up!');
-                        submitAnswers(); // Automatically submit answers
-                    } else {
-                        timeLeft--;
-                        const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                        const seconds = (timeLeft % 60).toString().padStart(2, '0');
-                        timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
-                    }
-                }, 1000);
+                timerElement.textContent = 'Practice Mode';
+                pauseButton.style.display = 'none'; // Hide pause button
             }
 
             // Generate the Answer Sheet
@@ -386,6 +415,34 @@
             submitButton.addEventListener('click', submitAnswers);
             answerSheet.appendChild(submitButton);
         }
+
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            timerInterval = setInterval(() => {
+                if (!timerPaused) {
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        submitAnswers(); // Automatically submit answers
+                    } else {
+                        timeLeft--;
+                        const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                        const seconds = (timeLeft % 60).toString().padStart(2, '0');
+                        timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerPaused = !timerPaused;
+            if (timerPaused) {
+                pauseButton.textContent = 'Resume';
+            } else {
+                pauseButton.textContent = 'Pause';
+            }
+        }
+
+        pauseButton.addEventListener('click', pauseTimer);
 
         function submitAnswers() {
             // Stop the timer
@@ -446,37 +503,31 @@
                 submitButton.remove();
             }
 
-            // Display results at the top
-            const timerElement = document.getElementById('timer');
-
+            // Display results in modal
             const percentage = Math.round((score / totalScore) * 100);
-
-            // Apply 'results' class to timer element
-            timerElement.className = 'results';
-
-            // Update timer element to display results
-            timerElement.innerHTML = `
-                <div class="score">You scored ${score} out of ${totalScore} (${percentage}%).</div>
-                <button id="home-button" class="home-button">Home</button>
-            `;
-
-            // Add event listener to home button
-            document.getElementById('home-button').addEventListener('click', () => {
-                window.location.href = 'choose_eco.html';
-            });
+            const resultsContent = document.getElementById('results-content');
+            resultsContent.innerHTML = `<p>You scored ${score} out of ${totalScore} (${percentage}%).</p>`;
+            resultsModal.style.display = 'block';
         }
 
-        // Reset functionality
-        function resetQuiz() {
-            // Reset user answers
-            userAnswers = {};
+        // Event listeners for Results Modal buttons
+        document.getElementById('home-button').addEventListener('click', () => {
+            resultsModal.style.display = 'none';
+            window.location.href = 'choose_eco.html';
+        });
 
-            // Reset examActive
-            examActive = false;
+        document.getElementById('review-button').addEventListener('click', () => {
+            resultsModal.style.display = 'none';
+            // Scroll to the top of the answer sheet
+            document.getElementById('answer-sheet').scrollTop = 0;
+        });
 
-            // Reset quiz content
-            initializeQuiz();
-        }
+        // Close Modals when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === resultsModal) {
+                resultsModal.style.display = 'none';
+            }
+        });
 
         // Request Full-Screen Mode
         function requestFullscreen() {
