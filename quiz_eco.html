@@ -29,6 +29,20 @@
             --incorrect-color: #dc3545;        /* Red */
             --not-chosen-correct-color: #ffc107; /* Yellow */
             --text-color: #ffffff;
+            --background-color: #f9f9f9;
+            --answer-sheet-bg: #f9f9f9;
+            --question-number-color: var(--primary-color);
+        }
+
+        /* Night Mode Variables */
+        body.night-mode {
+            --primary-color: #1e1e1e;          /* Dark Gray */
+            --secondary-color: #2c3e50;        /* Navy blue */
+            --accent-color: #ff6f61;           /* Coral remains the same */
+            --background-color: #121212;
+            --answer-sheet-bg: #1e1e1e;
+            --question-number-color: #ffffff;
+            --text-color: #ffffff;
         }
 
         /* Global Styles */
@@ -36,7 +50,7 @@
             height: 100%;
             font-family: 'Montserrat', sans-serif;
             color: var(--text-color);
-            background-color: var(--primary-color);
+            background-color: var(--background-color);
             overflow: hidden; /* Hide scrollbars to prevent scrolling during exam */
         }
 
@@ -59,6 +73,40 @@
         .results {
             background-color: var(--secondary-color);
             flex-direction: column;
+        }
+
+        /* Timer Controls */
+        .timer-controls {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer-button {
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-left: 15px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .timer-button:hover {
+            color: var(--accent-color);
+        }
+
+        /* Night Mode Toggle */
+        .night-mode-toggle {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .night-mode-toggle input[type="checkbox"] {
+            margin-right: 5px;
         }
 
         /* Result Score */
@@ -109,7 +157,7 @@
             width: 20%;
             height: 100%;
             overflow-y: auto;
-            background-color: #f9f9f9;
+            background-color: var(--answer-sheet-bg);
             color: #333333;
             padding: 10px;
             border-left: 1px solid #cccccc;
@@ -118,7 +166,7 @@
         .answer-sheet h2 {
             margin-bottom: 15px;
             font-size: 1.5rem;
-            color: var(--primary-color);
+            color: var(--question-number-color);
             text-align: center;
         }
 
@@ -130,7 +178,7 @@
             font-weight: bold;
             margin-bottom: 5px;
             text-align: center;
-            color: var(--primary-color);
+            color: var(--question-number-color);
             font-size: 1.1rem;
         }
 
@@ -151,6 +199,7 @@
             color: #333333;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+            position: relative;
         }
 
         .options button:hover {
@@ -163,6 +212,15 @@
             background-color: var(--accent-color);
             color: #ffffff;
             border-color: var(--accent-color);
+        }
+
+        .options button.bookmarked::after {
+            content: '★';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            color: gold;
+            font-size: 1.2rem;
         }
 
         /* Correct and Incorrect Styles */
@@ -203,6 +261,66 @@
             transform: translateY(-2px);
         }
 
+        /* Popup Modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--primary-color);
+            width: 80%;
+            max-width: 500px;
+            color: var(--text-color);
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #ff8566;
+            transform: translateY(-2px);
+        }
+
+        /* Notification */
+        .notification {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .quiz-container {
@@ -225,17 +343,52 @@
             .home-button {
                 margin-top: 10px;
             }
+
+            .modal-content {
+                margin-top: 50%;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Timer -->
     <div class="timer" id="timer">
-        <!-- Timer or results will display here -->
+        <div id="timer-text"><!-- Timer or results will display here --></div>
+        <!-- Timer Controls -->
+        <div class="timer-controls">
+            <button id="pause-button" class="timer-button"><i class="fas fa-pause"></i></button>
+        </div>
+        <!-- Night Mode Toggle -->
+        <div class="night-mode-toggle">
+            <input type="checkbox" id="night-mode-checkbox">
+            <label for="night-mode-checkbox">Night Mode</label>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">Time is up!</div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <h2>Submit Answers?</h2>
+            <p>Are you sure you want to submit your answers?</p>
+            <button id="confirm-submit">Yes, Submit</button>
+            <button id="cancel-submit">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="modal">
+        <div class="modal-content">
+            <h2>Your Results</h2>
+            <div id="results-content"><!-- Results will be inserted here --></div>
+            <button id="close-results">Close</button>
+        </div>
     </div>
 
     <!-- Alert for Exam Cancellation -->
-    <div class="alert" id="alert">
+    <div class="alert" id="alert" style="display: none;">
         Your exam has been canceled due to window switching or exiting full-screen mode.
     </div>
 
@@ -251,6 +404,9 @@
             <!-- Questions with options will be generated here -->
         </div>
     </div>
+
+    <!-- Include Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
     <!-- Inline JavaScript -->
     <script>
@@ -279,9 +435,20 @@
         // Initialize variables
         let correctAnswers = {};
         let userAnswers = {};
+        let bookmarkedQuestions = {};
         const totalQuestions = 30; // Adjust as needed
         let timerInterval; // For clearing the timer
         let examActive = false; // For tracking exam state
+        let timeLeft; // in seconds
+        let timerPaused = false; // For pausing the timer
+
+        // Elements
+        const timerElement = document.getElementById('timer-text');
+        const pauseButton = document.getElementById('pause-button');
+        const nightModeCheckbox = document.getElementById('night-mode-checkbox');
+        const notification = document.getElementById('notification');
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const resultsModal = document.getElementById('results-modal');
 
         // Fetch correct answers
         fetch(answersPath)
@@ -303,12 +470,6 @@
 
         function initializeQuiz() {
             // Timer setup
-            const timerElement = document.getElementById('timer');
-            let timeLeft; // in seconds
-
-            // Reset timer element
-            timerElement.className = 'timer';
-
             if (mode === 'exam') {
                 timeLeft = 60 * 60; // 1 hour in seconds
                 timerElement.textContent = 'Time Left: 60:00';
@@ -324,23 +485,8 @@
                 timerElement.textContent = `Time Left: ${customTimer}:00`;
                 startTimer();
             } else {
-                timerElement.style.display = 'none'; // Hide the timer if not in exam or custom mode
-            }
-
-            function startTimer() {
-                clearInterval(timerInterval); // Clear any existing timer
-                timerInterval = setInterval(() => {
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        alert('Time is up!');
-                        submitAnswers(); // Automatically submit answers
-                    } else {
-                        timeLeft--;
-                        const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                        const seconds = (timeLeft % 60).toString().padStart(2, '0');
-                        timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
-                    }
-                }, 1000);
+                timerElement.textContent = 'Practice Mode';
+                pauseButton.style.display = 'none'; // Hide pause button
             }
 
             // Generate the Answer Sheet
@@ -371,6 +517,12 @@
                         optionButton.classList.add('selected');
                     });
 
+                    // Right-click to bookmark
+                    optionButton.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleBookmark(i, optionButton);
+                    });
+
                     optionsDiv.appendChild(optionButton);
                 });
 
@@ -383,8 +535,49 @@
             const submitButton = document.createElement('button');
             submitButton.textContent = 'Submit Answers';
             submitButton.classList.add('submit-button');
-            submitButton.addEventListener('click', submitAnswers);
+            submitButton.addEventListener('click', () => {
+                confirmationModal.style.display = 'block';
+            });
             answerSheet.appendChild(submitButton);
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            timerInterval = setInterval(() => {
+                if (!timerPaused) {
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        showNotification('Time is up!');
+                        submitAnswers(); // Automatically submit answers
+                    } else {
+                        timeLeft--;
+                        const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                        const seconds = (timeLeft % 60).toString().padStart(2, '0');
+                        timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerPaused = !timerPaused;
+            if (timerPaused) {
+                pauseButton.innerHTML = '<i class="fas fa-play"></i>';
+            } else {
+                pauseButton.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+        }
+
+        pauseButton.addEventListener('click', pauseTimer);
+
+        function toggleBookmark(questionNumber, button) {
+            if (bookmarkedQuestions[questionNumber]) {
+                delete bookmarkedQuestions[questionNumber];
+                button.classList.remove('bookmarked');
+            } else {
+                bookmarkedQuestions[questionNumber] = true;
+                button.classList.add('bookmarked');
+            }
         }
 
         function submitAnswers() {
@@ -446,30 +639,51 @@
                 submitButton.remove();
             }
 
-            // Display results at the top
-            const timerElement = document.getElementById('timer');
-
+            // Display results in modal
             const percentage = Math.round((score / totalScore) * 100);
+            const resultsContent = document.getElementById('results-content');
+            resultsContent.innerHTML = `<p>You scored ${score} out of ${totalScore} (${percentage}%).</p>`;
+            resultsModal.style.display = 'block';
+        }
 
-            // Apply 'results' class to timer element
-            timerElement.className = 'results';
+        // Confirmation Modal Buttons
+        document.getElementById('confirm-submit').addEventListener('click', () => {
+            confirmationModal.style.display = 'none';
+            submitAnswers();
+        });
 
-            // Update timer element to display results
-            timerElement.innerHTML = `
-                <div class="score">You scored ${score} out of ${totalScore} (${percentage}%).</div>
-                <button id="home-button" class="home-button">Home</button>
-            `;
+        document.getElementById('cancel-submit').addEventListener('click', () => {
+            confirmationModal.style.display = 'none';
+        });
 
-            // Add event listener to home button
-            document.getElementById('home-button').addEventListener('click', () => {
-                window.location.href = 'choose_eco.html';
-            });
+        // Close Results Modal
+        document.getElementById('close-results').addEventListener('click', () => {
+            resultsModal.style.display = 'none';
+            window.location.href = 'choose_eco.html';
+        });
+
+        // Night Mode Toggle
+        nightModeCheckbox.addEventListener('change', () => {
+            if (nightModeCheckbox.checked) {
+                document.body.classList.add('night-mode');
+            } else {
+                document.body.classList.remove('night-mode');
+            }
+        });
+
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
         }
 
         // Reset functionality
         function resetQuiz() {
             // Reset user answers
             userAnswers = {};
+            bookmarkedQuestions = {};
 
             // Reset examActive
             examActive = false;
@@ -543,6 +757,16 @@
             // Exit full-screen mode
             exitFullscreen();
         }
+
+        // Close Modals when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === confirmationModal) {
+                confirmationModal.style.display = 'none';
+            }
+            if (event.target === resultsModal) {
+                resultsModal.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

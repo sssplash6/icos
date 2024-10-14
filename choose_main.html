@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iCos - Choose Subject</title>
+
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Choose Your Option</title>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+
+    <!-- Combined CSS Styles -->
     <style>
         /* CSS Reset */
         * {
@@ -17,11 +24,11 @@
         /* Root Variables for Colors */
         :root {
             --primary-color: #2c3e50;    /* Navy blue */
-            --secondary-color: #18bc9c;  /* Teal */
+            --secondary-color: #18bc9c;  /* Teal for Economics */
             --accent-color: #ff6f61;     /* Coral */
+            --physics-color: #3498db;    /* Blue for Physics */
             --text-color: #ffffff;
-            --coming-soon-overlay: rgba(0, 0, 0, 0.5);
-            --hover-glow: rgba(255, 255, 255, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.2);
         }
 
         /* Global Styles */
@@ -29,7 +36,7 @@
             height: 100%;
             font-family: 'Montserrat', sans-serif;
             color: var(--text-color);
-            background: linear-gradient(to bottom right, #2c3e50, #34495e);
+            background-color: var(--primary-color);
             scroll-behavior: smooth;
         }
 
@@ -37,11 +44,10 @@
         .navbar {
             position: fixed;
             width: 100%;
-            background-color: rgba(44, 62, 80, 0.95);
+            background-color: rgba(44, 62, 80, 0.9);
             padding: 10px 0;
             top: 0;
             z-index: 10;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
 
         .navbar .container {
@@ -85,11 +91,10 @@
             color: #ffffff;
             text-decoration: none;
             font-size: 1rem;
-            transition: color 0.3s ease;
         }
 
         .navbar .nav-links a:hover {
-            color: var(--secondary-color);
+            text-decoration: underline;
         }
 
         .navbar .menu-toggle {
@@ -99,127 +104,124 @@
             cursor: pointer;
         }
 
-        /* Selection Form Section */
-        .selection-form {
-            padding-top: 150px;
-            min-height: calc(100vh - 70px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .selection-form .subject-options {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            max-width: 1200px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .subject-option {
+        /* Subject Selection Page Styles */
+        .subject-selection {
+            padding-top: 100px;
             text-align: center;
-            padding: 20px;
-            width: 220px;
-            height: 250px;
-            background: linear-gradient(to top right, #34495e, #2c3e50);
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-            overflow: hidden;
-            cursor: pointer;
+            min-height: 100vh;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        .subject-selection h1 {
+            font-size: 3rem;
+            margin-bottom: 50px;
+            font-weight: 700;
+        }
+
+        .subject-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .subject-card {
             position: relative;
-        }
-
-        .subject-option:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 25px var(--hover-glow);
-            background: linear-gradient(to top right, #3c5972, #2c3e50);
-        }
-
-        .subject-option .subject-link {
+            color: #ffffff;
+            width: 300px;
+            height: 200px;
+            margin: 20px;
+            padding: 20px;
             text-decoration: none;
-            color: inherit;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .subject-card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .subject-icon {
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 12px var(--shadow-color);
+        }
+
+        .subject-card:hover::before {
+            opacity: 0.5;
+        }
+
+        .subject-card .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .subject-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .subject-card i {
             font-size: 3rem;
-            margin-bottom: 15px;
-            color: var(--secondary-color);
-            transition: transform 0.3s ease, color 0.3s ease;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        .subject-option:hover .subject-icon {
-            transform: scale(1.1);
-            color: #1abc9c;
+        /* Specific Styles for Physics */
+        .subject-card.physics {
+            background-color: var(--physics-color);
         }
 
-        .button-24 {
-            background-color: var(--accent-color);
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            z-index: 5;
+        .subject-card.physics::before {
+            background-image: url('physics-background.jpg'); /* Replace with actual image path */
         }
 
-        .button-24:hover {
-            background-color: #ff8f81;
-            transform: translateY(-3px);
+        /* Specific Styles for Economics */
+        .subject-card.economics {
+            background-color: var(--secondary-color);
         }
 
-        .coming-soon {
-            background-color: #ccc;
-            color: #333;
-            padding: 10px 20px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            cursor: not-allowed;
-            z-index: 5;
+        .subject-card.economics::before {
+            background-image: url('economics-background.jpg'); /* Replace with actual image path */
         }
 
-        .coming-soon::after {
-            content: 'Coming Soon';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 1.2rem;
-            color: var(--coming-soon-overlay);
-            font-weight: bold;
-            pointer-events: none;
+        /* Footer Section */
+        footer {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
         }
 
-        /* Adjustments for smaller screens */
+        footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        /* Responsive Styles */
         @media (max-width: 768px) {
-            .selection-form .subject-options {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .subject-option {
-                width: 90%;
-                max-width: 300px;
-            }
-
             .navbar .nav-links {
                 display: none;
                 flex-direction: column;
@@ -243,6 +245,11 @@
             .navbar .menu-toggle {
                 display: block;
             }
+
+            .subject-card {
+                width: 80%;
+                margin: 20px auto;
+            }
         }
 
         @media (min-width: 769px) {
@@ -261,9 +268,8 @@
                 <span class="logo-text">iCos</span>
             </a>
             <ul class="nav-links">
-                <li><a href="#">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact</a></li>
             </ul>
             <div class="menu-toggle" id="mobile-menu">
                 <i class="fas fa-bars"></i>
@@ -271,41 +277,35 @@
         </div>
     </nav>
 
-    <!-- Selection Form Section -->
-    <div class="selection-form">
+    <!-- Subject Selection Section -->
+    <div class="subject-selection">
+        <h1>Select a Subject</h1>
         <div class="subject-options">
-            <div class="subject-option">
-                <a href="choose_eco.html" class="subject-link"></a>
-                <i class="fas fa-chart-line subject-icon"></i>
-                <span class="button-24">Economics</span>
-            </div>
+            <a href="choose_phy.html" class="subject-card physics">
+                <div class="content">
 
-            <div class="subject-option">
-                <a href="choose_phy.html" class="subject-link"></a>
-                <i class="fas fa-atom subject-icon"></i>
-                <span class="button-24">Physics (9702)</span>
-            </div>
-
-            <div class="subject-option">
-                <div class="subject-link"></div>
-                <i class="fas fa-leaf subject-icon"></i>
-                <div class="coming-soon">Biology</div>
-            </div>
-
-            <div class="subject-option">
-                <div class="subject-link"></div>
-                <i class="fas fa-flask subject-icon"></i>
-                <div class="coming-soon">Chemistry</div>
-            </div>
+                </div>
+            </a>
+            <a href="choose_eco.html" class="subject-card economics">
+                <div class="content">
+                </div>
+            </a>
         </div>
     </div>
 
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 iCos. All rights are not reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
     <script>
-        // Mobile menu toggle script
-        const mobileMenu = document.getElementById('mobile-menu');
+        const menuToggle = document.getElementById('mobile-menu');
         const navLinks = document.querySelector('.nav-links');
 
-        mobileMenu.addEventListener('click', () => {
+        menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
     </script>
