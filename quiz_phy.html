@@ -29,23 +29,8 @@
             --incorrect-color: #dc3545;        /* Red */
             --not-chosen-correct-color: #ffc107; /* Yellow */
             --text-color: #ffffff;
-            --background-color: var(--primary-color);
-            --answer-sheet-bg: #f9f9f9;
-            --answer-sheet-text: #333333;
-            --option-bg: #ffffff;
-            --option-text: #333333;
-            --bookmark-color: var(--accent-color);
-        }
-
-        /* Night Mode Variables */
-        body.night-mode {
-            --background-color: #1a1a1a;
-            --text-color: #f1f1f1;
-            --answer-sheet-bg: #2b2b2b;
-            --answer-sheet-text: #f1f1f1;
-            --option-bg: #3c3c3c;
-            --option-text: #f1f1f1;
-            --bookmark-color: #ffd700;
+            --background-color: #f9f9f9;
+            --question-number-color: var(--primary-color);
         }
 
         /* Global Styles */
@@ -53,7 +38,7 @@
             height: 100%;
             font-family: 'Montserrat', sans-serif;
             color: var(--text-color);
-            background-color: var(--background-color);
+            background-color: var(--primary-color);
             overflow: hidden; /* Hide scrollbars to prevent scrolling during exam */
         }
 
@@ -90,9 +75,9 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Modal Styles */
+        /* Pop-up Modal */
         .modal {
-            display: none;
+            display: none; /* Hidden by default */
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -100,19 +85,19 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
+            background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
-            background-color: var(--answer-sheet-bg);
-            color: var(--answer-sheet-text);
+            background-color: var(--background-color);
+            margin: 15% auto;
             padding: 20px;
-            border-radius: 10px;
+            border: 1px solid var(--primary-color);
             width: 80%;
             max-width: 500px;
+            color: var(--primary-color);
             text-align: center;
+            border-radius: 10px;
         }
 
         .modal-content h2 {
@@ -123,11 +108,11 @@
             background-color: var(--accent-color);
             color: #ffffff;
             padding: 10px 20px;
-            margin: 5px;
+            font-size: 1rem;
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            font-size: 16px;
+            margin: 10px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
@@ -160,8 +145,8 @@
             width: 20%;
             height: 100%;
             overflow-y: auto;
-            background-color: var(--answer-sheet-bg);
-            color: var(--answer-sheet-text);
+            background-color: var(--background-color);
+            color: #333333;
             padding: 10px;
             border-left: 1px solid #cccccc;
         }
@@ -169,36 +154,20 @@
         .answer-sheet h2 {
             margin-bottom: 15px;
             font-size: 1.5rem;
-            color: var(--primary-color);
+            color: var(--question-number-color);
             text-align: center;
         }
 
         .question {
             margin-bottom: 15px;
-            position: relative;
         }
 
         .question-number {
             font-weight: bold;
             margin-bottom: 5px;
             text-align: center;
-            color: var(--primary-color);
+            color: var(--question-number-color);
             font-size: 1.1rem;
-        }
-
-        .bookmark-button {
-            position: absolute;
-            top: 0;
-            right: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--bookmark-color);
-        }
-
-        .bookmark-button.bookmarked {
-            color: var(--accent-color);
         }
 
         .options {
@@ -214,8 +183,8 @@
             font-size: 1rem;
             border: 2px solid #cccccc;
             border-radius: 50%;
-            background-color: var(--option-bg);
-            color: var(--option-text);
+            background-color: #ffffff;
+            color: #333333;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
         }
@@ -294,10 +263,7 @@
 <body>
     <!-- Timer -->
     <div class="timer" id="timer">
-        <div class="night-mode-toggle">
-            <button id="night-mode-button">Night Mode</button>
-        </div>
-        <div id="timer-text"><!-- Timer or results will display here --></div>
+        <div id="timer-text"><!-- Timer will display here --></div>
         <button id="pause-button" class="pause-button">Pause</button>
     </div>
 
@@ -343,7 +309,7 @@
         // Validate the parameters
         if (!year || !season || !component || !mode) {
             alert('Invalid selection. Please go back and select all options.');
-            window.location.href = 'choose_eco.html';
+            window.location.href = 'choose_phy.html';
         }
 
         // Construct file paths
@@ -361,12 +327,10 @@
         let examActive = false; // For tracking exam state
         let timeLeft; // in seconds
         let timerPaused = false; // For pausing the timer
-        let bookmarkedQuestions = new Set(); // For bookmarked questions
 
         // Elements
         const timerElement = document.getElementById('timer-text');
         const pauseButton = document.getElementById('pause-button');
-        const nightModeButton = document.getElementById('night-mode-button');
         const resultsModal = document.getElementById('results-modal');
 
         // Fetch correct answers
@@ -404,38 +368,9 @@
                 timerElement.textContent = `Time Left: ${customTimer}:00`;
                 startTimer();
             } else {
-                timerElement.style.display = 'none'; // Hide the timer if not in exam or custom mode
-                pauseButton.style.display = 'none';
+                timerElement.textContent = 'Practice Mode';
+                pauseButton.style.display = 'none'; // Hide pause button
             }
-
-            function startTimer() {
-                clearInterval(timerInterval); // Clear any existing timer
-                timerInterval = setInterval(() => {
-                    if (!timerPaused) {
-                        if (timeLeft <= 0) {
-                            clearInterval(timerInterval);
-                            submitAnswers(); // Automatically submit answers
-                        } else {
-                            timeLeft--;
-                            const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                            const seconds = (timeLeft % 60).toString().padStart(2, '0');
-                            timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
-                        }
-                    }
-                }, 1000);
-            }
-
-            // Pause/Resume Timer
-            pauseButton.addEventListener('click', () => {
-                timerPaused = !timerPaused;
-                pauseButton.textContent = timerPaused ? 'Resume' : 'Pause';
-            });
-
-            // Night Mode Toggle
-            nightModeButton.addEventListener('click', () => {
-                document.body.classList.toggle('night-mode');
-                nightModeButton.textContent = document.body.classList.contains('night-mode') ? 'Day Mode' : 'Night Mode';
-            });
 
             // Generate the Answer Sheet
             const answerSheet = document.getElementById('answer-sheet');
@@ -448,22 +383,6 @@
                 const questionNumber = document.createElement('div');
                 questionNumber.classList.add('question-number');
                 questionNumber.textContent = i;
-
-                const bookmarkButton = document.createElement('button');
-                bookmarkButton.classList.add('bookmark-button');
-                bookmarkButton.innerHTML = '&#9734;'; // Star icon
-                bookmarkButton.setAttribute('data-question', i);
-
-                bookmarkButton.addEventListener('click', () => {
-                    const qNum = bookmarkButton.getAttribute('data-question');
-                    if (bookmarkedQuestions.has(qNum)) {
-                        bookmarkedQuestions.delete(qNum);
-                        bookmarkButton.classList.remove('bookmarked');
-                    } else {
-                        bookmarkedQuestions.add(qNum);
-                        bookmarkButton.classList.add('bookmarked');
-                    }
-                });
 
                 const optionsDiv = document.createElement('div');
                 optionsDiv.classList.add('options');
@@ -485,7 +404,6 @@
                 });
 
                 questionDiv.appendChild(questionNumber);
-                questionDiv.appendChild(bookmarkButton);
                 questionDiv.appendChild(optionsDiv);
                 answerSheet.appendChild(questionDiv);
             }
@@ -494,11 +412,33 @@
             const submitButton = document.createElement('button');
             submitButton.textContent = 'Submit Answers';
             submitButton.classList.add('submit-button');
-            submitButton.addEventListener('click', () => {
-                showConfirmationModal();
-            });
+            submitButton.addEventListener('click', submitAnswers);
             answerSheet.appendChild(submitButton);
         }
+
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            timerInterval = setInterval(() => {
+                if (!timerPaused) {
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        submitAnswers(); // Automatically submit answers
+                    } else {
+                        timeLeft--;
+                        const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                        const seconds = (timeLeft % 60).toString().padStart(2, '0');
+                        timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerPaused = !timerPaused;
+            pauseButton.textContent = timerPaused ? 'Resume' : 'Pause';
+        }
+
+        pauseButton.addEventListener('click', pauseTimer);
 
         function submitAnswers() {
             // Stop the timer
@@ -551,12 +491,6 @@
                         btn.classList.add('not-chosen-correct');
                     }
                 });
-
-                // Disable bookmark button
-                const bookmarkButton = questionDiv.querySelector('.bookmark-button');
-                if (bookmarkButton) {
-                    bookmarkButton.disabled = true;
-                }
             });
 
             // Remove submit button
@@ -565,7 +499,7 @@
                 submitButton.remove();
             }
 
-            // Display results in a modal
+            // Display results in modal
             const percentage = Math.round((score / totalScore) * 100);
             const resultsContent = document.getElementById('results-content');
             resultsContent.innerHTML = `<p>You scored ${score} out of ${totalScore} (${percentage}%).</p>`;
@@ -590,27 +524,6 @@
                 resultsModal.style.display = 'none';
             }
         });
-
-        // Show Confirmation Modal
-        function showConfirmationModal() {
-            const modal = document.getElementById('modal');
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
-                <h2>Are you sure you want to submit?</h2>
-                <button id="confirm-submit">Yes</button>
-                <button id="cancel-submit">No</button>
-            `;
-            modal.style.display = 'flex';
-
-            document.getElementById('confirm-submit').addEventListener('click', () => {
-                modal.style.display = 'none';
-                submitAnswers();
-            });
-
-            document.getElementById('cancel-submit').addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-        }
 
         // Request Full-Screen Mode
         function requestFullscreen() {
