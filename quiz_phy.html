@@ -417,12 +417,12 @@
         }
 
         function startTimer() {
-            clearInterval(timerInterval); // Clear any existing timer
+            clearInterval(timerInterval); 
             timerInterval = setInterval(() => {
                 if (!timerPaused) {
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
-                        submitAnswers(); // Automatically submit answers
+                        submitAnswers(); 
                     } else {
                         timeLeft--;
                         const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
