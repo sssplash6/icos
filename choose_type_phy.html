@@ -4,7 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iCos - Choose Subject</title>
+    <title>iCos - Choose Your Path</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
@@ -24,9 +24,9 @@
         /* Root Variables for Colors */
         :root {
             --primary-color: #2c3e50;    /* Navy blue */
-            --secondary-color: #18bc9c;  /* Teal for Economics */
             --accent-color: #ff6f61;     /* Coral */
-            --physics-color: #3498db;    /* Blue for Physics */
+            --resource-color: #8e44ad;   /* Purple for Resource Bank */
+            --quiz-color: #e67e22;       /* Orange for Interactive Quizzes */
             --text-color: #ffffff;
             --shadow-color: rgba(0, 0, 0, 0.2);
         }
@@ -141,6 +141,7 @@
             justify-content: flex-end;
             align-items: center;
             box-shadow: 0 4px 6px var(--shadow-color);
+            cursor: pointer;
         }
 
         .subject-card::before {
@@ -169,10 +170,11 @@
         .subject-card .content {
             position: relative;
             z-index: 1;
+            text-align: center;
         }
 
         .subject-card h2 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 10px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -184,22 +186,22 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        /* Specific Styles for Physics */
-        .subject-card.physics {
-            background-color: var(--physics-color);
+        /* Specific Styles for Resource Bank */
+        .subject-card.resource {
+            background-color: var(--resource-color);
         }
 
-        .subject-card.physics::before {
-            background-image: url('physics-background.jpg'); /* Replace with actual image path */
+        .subject-card.resource::before {
+            background-image: url('resource-background.jpg'); /* Replace with actual image path */
         }
 
-        /* Specific Styles for Economics */
-        .subject-card.economics {
-            background-color: var(--secondary-color);
+        /* Specific Styles for Interactive Quizzes */
+        .subject-card.quiz {
+            background-color: var(--quiz-color);
         }
 
-        .subject-card.economics::before {
-            background-image: url('economics-background.jpg'); /* Replace with actual image path */
+        .subject-card.quiz::before {
+            background-image: url('quiz-background.jpg'); /* Replace with actual image path */
         }
 
         /* Footer Section */
@@ -271,20 +273,27 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="#">About Us</a></li>
             </ul>
+            <!-- Mobile Menu Toggle -->
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </nav>
 
     <!-- Subject Selection Section -->
     <div class="subject-selection">
-        <h1>Select a Subject</h1>
+        <h1>Choose Your Path</h1>
         <div class="subject-options">
-            <a href="choose_type_phy.html" class="subject-card physics">
+            <a href="resbank_phy.html" class="subject-card resource">
                 <div class="content">
-
+                    <i class="fas fa-book"></i>
+                    <h2>Resource Bank</h2>
                 </div>
             </a>
-            <a href="choose_type_eco.html" class="subject-card economics">
+            <a href="choose_phy.html" class="subject-card quiz">
                 <div class="content">
+                    <i class="fas fa-question-circle"></i>
+                    <h2>Interactive Quizzes</h2>
                 </div>
             </a>
         </div>
