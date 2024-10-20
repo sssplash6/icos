@@ -29,7 +29,7 @@ body, html {
 .navbar {
     position: fixed;
     width: 100%;
-    background-color: var(--primary-color); /* Changed to solid color */
+    background-color: var(--primary-color);
     padding: 10px 0;
     top: 0;
     z-index: 10;
@@ -102,11 +102,11 @@ body, html {
     position: relative;
     height: 100vh;
     color: #ffffff;
-    text-align: center;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
     padding-top: 70px;
+    padding: 0 5%;
     overflow: hidden;
 }
 
@@ -118,18 +118,23 @@ body, html {
     width: 100%;
     height: 100%;
     background: rgba(44, 62, 80, 0.7);
+    z-index: 0;
 }
 
-.hero h1 {
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 50%;
+}
+
+.hero-content h1 {
     font-size: 4rem;
     margin-bottom: 20px;
     font-weight: 700;
-    position: relative;
-    z-index: 1;
     animation: fadeInDown 1s ease-out;
 }
 
-.hero h1 .logo {
+.hero-content h1 .logo {
     background: linear-gradient(90deg, var(--accent-color), #ff8f81);
     -webkit-background-clip: text;
     background-clip: text;
@@ -137,39 +142,67 @@ body, html {
     text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
 
-.hero p {
+.hero-content p {
     font-size: 1.5rem;
     margin-bottom: 30px;
     font-weight: 300;
-    position: relative;
-    z-index: 1;
     animation: fadeInDown 1s ease-out;
     animation-delay: 0.2s;
 }
 
-.hero p .economics {
+.hero-content p .economics {
     color: var(--economics-color);
     font-weight: bold;
 }
 
-.hero p .physics {
+.hero-content p .physics {
     color: var(--physics-color);
     font-weight: bold;
 }
 
-.hero .button-24 {
+.hero-content .button-24 {
+    margin-top: 20px;
+}
+
+/* Hero Images */
+.hero-images {
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: 40%;
+}
+
+.hero-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    opacity: 0;
+    animation: popDown 1s forwards;
+    position: absolute;
+}
+
+.hero-image.economist {
+    top: 0;
+    right: 100px;
+    animation-delay: 0.3s;
+}
+
+.hero-image.physicist {
+    bottom: 0;
+    right: 0;
+    animation-delay: 0.5s;
 }
 
 /* Button Styles */
 .button-24 {
-    background-color: var(--accent-color); /* Changed to solid color */
+    background-color: var(--accent-color);
     color: #fff;
     padding: 15px 30px;
     font-size: 1.2rem;
     border: none;
-    border-radius: 5px; /* Adjusted border radius */
+    border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.3s, transform 0.2s;
     display: inline-block;
@@ -177,7 +210,7 @@ body, html {
 
 .button-24:hover {
     background-color: #ff8f81;
-    transform: translateY(-3px); /* Slight lift on hover */
+    transform: translateY(-3px);
 }
 
 /* Footer Section */
@@ -210,14 +243,44 @@ footer p {
     }
 }
 
+@keyframes popDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .hero h1 {
-        font-size: 2.5rem;
+    .hero {
+        flex-direction: column;
+        padding: 70px 5% 0 5%;
+        text-align: center;
     }
 
-    .hero p {
-        font-size: 1.2rem;
+    .hero-content {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .hero-images {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .hero-image {
+        position: static;
+        width: 150px;
+        height: 150px;
+        margin: 0 10px;
     }
 
     .navbar .nav-links {
